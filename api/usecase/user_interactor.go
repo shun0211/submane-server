@@ -1,13 +1,12 @@
 package usecase
 
 import (
-	"./../domain"
+	"submane-server/api/domain"
 )
 
 type UserInteractor struct {
 	UserRepository UserRepository
 }
-
 
 func (interactor *UserInteractor) UserById(id int) (user domain.User, err error) {
 	// Note: 変数の初期化は戻り値に指定した変数でされているのでここでは=を使っている

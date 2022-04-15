@@ -1,5 +1,4 @@
 version: '3.7'
-
 services:
   echo:
     container_name: echo
@@ -12,22 +11,19 @@ services:
     ports:
       - "1323:1323"
     command: realize start --run --no-config
-  mysql:
-    container_name: mysql
-    build:
-      context: .
-      dockerfile: ./docker/mysql/Dockerfile
+  postgres:
+    image: postgres
+    platform: linux/amd64
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: sabumanedb
-      MYSQL_USER: docker
-      MYSQL_PASSWORD: docker
+      POSTGRES_DATABASE: sabumane_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      PASSWORD: password
       TZ: 'Asia/Tokyo'
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - ./mysql/data:/var/lib/mysql
-      - ./mysql/initdb.d:/docker-entrypoint-initdb.d
-      - ./mysql/conf.d:/etc/mysql/conf.d
-      - ./mysql/log/mysql:/var/log/mysql
+      - postgres-data
     ports:
-      - "3307:3306"
+      - 5433:5432
+volumes:
+  postgres-data:
+    driver: local
