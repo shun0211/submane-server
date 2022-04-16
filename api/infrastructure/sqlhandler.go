@@ -11,16 +11,14 @@ type SqlHandler struct {
 	Conn *gorm.DB
 }
 
+// FUCK: database.SqlHandlerが戻り値で指定されているのに対して、関数内ではSqlHandlerのポインタ型を返していてOKなのかが分からない
 func NewSqlHandler() database.SqlHandler {
 	dsn := "host=postgres user=root password=password dbname=sabumane_db port=5432 sslmode=disable TimeZone=Asia/Tokyo"
 	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{}) // &gormはポインタ型
 	if err != nil {
 		panic(err.Error())
 	}
-	// FUCK: なぜか↓だとコンパイルエラーになる
-	// sqlHandler := SqlHandler{Conn: conn}
-	sqlHandler := new(SqlHandler)
-	sqlHandler.Conn = conn
+	sqlHandler := &SqlHandler{Conn: conn}
 	return sqlHandler
 }
 

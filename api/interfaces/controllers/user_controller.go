@@ -1,6 +1,9 @@
 package controllers
 
-import "submane-server/api/usecase"
+import (
+	"submane-server/api/interfaces/controllers/database"
+	"submane-server/api/usecase"
+)
 
 type UserController struct {
 	interactor usecase.UserInteractor
