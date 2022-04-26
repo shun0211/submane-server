@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"submane-server/api/domain"
+	"api/domain"
 )
 
 type UserInteractor struct {

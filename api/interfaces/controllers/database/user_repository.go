@@ -1,11 +1,13 @@
 package database
 
-import "submane-server/api/domain"
+import "api/domain"
 
 // NOTE: ここでフィールド名を省略しているため、SqlHandlerを省略してFindフィールドなどにアクセスできる
 type UserRepository struct {
 	SqlHandler
 }
+
+// NOTE: usecaseでFindByIdなどのインターフェースが定義されているので、外側にあるcontroller(presenter)がインターフェースを実装する
 
 // NOTE: returnではuserとerrが返る
 func (repo *UserRepository) FindById(id int) (user domain.User, err error) {

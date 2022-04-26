@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"strconv"
-	"submane-server/api/domain"
-	"submane-server/api/interfaces/controllers/database"
-	"submane-server/api/usecase"
+	"api/domain"
+	"api/interfaces/controllers/database"
+	"api/usecase"
 
 	"github.com/labstack/echo/v4"
 )

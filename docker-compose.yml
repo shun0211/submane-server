@@ -7,21 +7,22 @@ services:
       dockerfile: ./docker/api/Dockerfile
       target: build
     volumes:
-      - ./api:/go/src/github.com/shun0211/sabumane-server/api
+      - ./api:/go/src/submane-server/api
     ports:
       - "1323:1323"
-    command: realize start --run --no-config
+    command: go run server.go
   postgres:
     image: postgres
     platform: linux/amd64
     environment:
-      POSTGRES_DATABASE: sabumane_db
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: password
-      PASSWORD: password
+      # POSTGRES_DATABASE: submane_db
+      POSTGRES_DB: submane_db
+      POSTGRES_USER: gorm
+      POSTGRES_PASSWORD: gorm
+      # PASSWORD: gorm
       TZ: 'Asia/Tokyo'
     volumes:
-      - postgres-data
+      - postgres-data:/var/lib/pgadmin
     ports:
       - 5433:5432
 volumes:

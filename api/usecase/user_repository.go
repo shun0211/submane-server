@@ -1,6 +1,6 @@
 package usecase
 
-import "submane-server/api/domain"
+import "api/domain"
 
 type UserRepository interface {
 	FindById(id int) (domain.User, error)

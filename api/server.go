@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/shun0211/submane-server/api/infrastructure"
-)
+import "api/infrastructure"
 
 func main() {
 	infrastructure.Init()

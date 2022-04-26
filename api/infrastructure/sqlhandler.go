@@ -1,7 +1,7 @@
 package infrastructure
 
 import (
-	"submane-server/api/interfaces/controllers/database"
+	"api/interfaces/controllers/database"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -11,9 +11,10 @@ type SqlHandler struct {
 	Conn *gorm.DB
 }
 
+// SqlHandlerの実装部分
 // FUCK: database.SqlHandlerが戻り値で指定されているのに対して、関数内ではSqlHandlerのポインタ型を返していてOKなのかが分からない
 func NewSqlHandler() database.SqlHandler {
-	dsn := "host=postgres user=root password=password dbname=sabumane_db port=5432 sslmode=disable TimeZone=Asia/Tokyo"
+	dsn := "host=postgres user=root password=password dbname=submane_db port=5432 sslmode=disable TimeZone=Asia/Tokyo"
 	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{}) // &gormはポインタ型
 	if err != nil {
 		panic(err.Error())
