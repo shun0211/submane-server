@@ -15,11 +15,9 @@ services:
     image: postgres
     platform: linux/amd64
     environment:
-      # POSTGRES_DATABASE: submane_db
       POSTGRES_DB: submane_db
       POSTGRES_USER: gorm
       POSTGRES_PASSWORD: gorm
-      # PASSWORD: gorm
       TZ: 'Asia/Tokyo'
     volumes:
       - postgres-data:/var/lib/pgadmin
