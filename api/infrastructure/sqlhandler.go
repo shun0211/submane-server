@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"api/domain"
 	"api/interfaces/controllers/database"
 
 	"gorm.io/driver/postgres"
@@ -19,6 +20,10 @@ func NewSqlHandler() database.SqlHandler {
 	if err != nil {
 		panic(err.Error())
 	}
+
+	// NOTE: Auto Migration
+	conn.AutoMigrate(domain.User{}, domain.Subscription{})
+
 	sqlHandler := &SqlHandler{Conn: conn}
 	return sqlHandler
 }
