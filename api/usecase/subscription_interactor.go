@@ -10,3 +10,8 @@ func (interactor *SubscriptionInteractor) Subscriptions() (subscriptions domain.
 	subscriptions, err = interactor.SubscriptionRepository.FindAll()
 	return
 }
+
+func(interactor *SubscriptionInteractor) Add(s domain.Subscription) (subscription domain.Subscription, err error) {
+	subscription, err = interactor.SubscriptionRepository.Store(s)
+	return
+}
