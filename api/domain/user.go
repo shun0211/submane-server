@@ -4,5 +4,5 @@ type Users []User
 
 type User struct {
 	ID int
-	Name string
+	Name string `json:"name" validate:"required,name"`
 }
