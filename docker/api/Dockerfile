@@ -6,7 +6,7 @@ COPY ./api/go.sum .
 RUN go mod download
 COPY ./api .
 
+# -oはoutput
 RUN go build -o /go/bin/app
-# RUN go build -o /go/bin/app && \
-  # go get gopkg.in/urfave/cli.v2@master && \
-  # go get github.com/oxequa/realize
+RUN curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
+CMD ["air"]

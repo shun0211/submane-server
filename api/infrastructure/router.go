@@ -26,7 +26,7 @@ func Init() {
 	e.DELETE("/user/:id", func(c echo.Context) error { return userController.Delete(c) })
 
 	// Subscription CRUD
-	e.GET("/subscription", func(c echo.Context) error { return subscriptionController.Index(c) })
+	e.GET("/subscriptions", func(c echo.Context) error { return subscriptionController.Index(c) })
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))

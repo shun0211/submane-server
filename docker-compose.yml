@@ -10,7 +10,15 @@ services:
       - ./api:/go/src/submane-server/api
     ports:
       - "1323:1323"
-    command: go run server.go
+      - "2345:2345"
+    depends_on:
+      - postgres
+    # NOTE: Docker上でdelveを利用する為の設定
+    # https://please-sleep.cou929.nu/debug-go-project-with-delve-on-docker.html
+    security_opt:
+      - apparmor:unconfined
+    cap_add:
+      - SYS_PTRACE
   postgres:
     image: postgres
     platform: linux/amd64
