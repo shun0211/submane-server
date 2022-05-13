@@ -35,6 +35,10 @@ func (controller *SubscriptionController) Index(c echo.Context) (err error) {
 func(controller *SubscriptionController) Create(c echo.Context) (err error) {
 	s := domain.Subscription{}
 	c.Bind(&s)
+	if err = c.Validate(s); err != nil {
+		c.JSON(400, err.Error())
+		return
+	}
 	subscription, err := controller.Interactor.Add(s)
 	if err != nil {
 		c.JSON(500, NewError(err))

@@ -1,8 +1,11 @@
 package domain
 
+import "gorm.io/gorm"
+
 type Users []User
 
 type User struct {
-	ID int `json:"id"`
-	Name string `json:"name"`
+	gorm.Model
+	Name string `validate:"required"`
+	Email string `validate:"required"`
 }

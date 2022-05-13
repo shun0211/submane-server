@@ -10,6 +10,7 @@ import (
 func Init() {
 	// Echo instance
 	e := echo.New()
+	e.Validator = NewValidator()
 
 	userController := controllers.NewUserController(NewSqlHandler())
 	subscriptionController := controllers.NewSubscriptionController(NewSqlHandler())

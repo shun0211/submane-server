@@ -5,4 +5,5 @@ type Context interface {
 	Bind(interface{}) error
 	Status(int)
 	JSON(int, interface{})
+	Validate(interface{}) error
 }

@@ -11,10 +11,9 @@ type Subscriptions []Subscription
 type Subscription struct {
 	// NOTE: IDフィールドは自動で主キーとして扱われる
 	gorm.Model
-	Name string
-	Price int
+	Name string `validate:"required"`
+	Price int `validate:"required"`
 	ContractAt time.Time
-	UpdateAt time.Time
-	UserID int
+	UserID int `validate:"required"`
 	User User
 }

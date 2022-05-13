@@ -47,7 +47,11 @@ func (controller *UserController) Index(c echo.Context) (err error) {
 
 func (controller *UserController) Create(c echo.Context) (err error) {
 	u := domain.User{}
-	c.Bind(&u)
+	c.Bind(u)
+	if err = c.Validate(u); err != nil {
+		c.JSON(400, err.Error())
+		return
+	}
 	user, err := controller.Interactor.Add(u)
 	if err != nil {
 		c.JSON(500, NewError(err))
@@ -60,6 +64,10 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 func (controller *UserController) Save(c echo.Context) (err error) {
 	u := domain.User{}
 	c.Bind(&u)
+	if err = c.Validate(u); err != nil {
+		c.JSON(400, err.Error())
+		return
+	}
 	user, err := controller.Interactor.Update(u)
 	if err != nil {
 		c.JSON(500, NewError(err))
