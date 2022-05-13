@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"api/adapter/database"
 	"api/domain"
-	"api/interfaces/controllers/database"
 	"api/usecase"
 	"strconv"
 

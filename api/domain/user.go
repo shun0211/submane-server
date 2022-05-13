@@ -3,6 +3,6 @@ package domain
 type Users []User
 
 type User struct {
-	ID int
-	Name string
+	ID int `json:"id"`
+	Name string `json:"name"`
 }

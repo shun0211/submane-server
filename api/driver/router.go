@@ -1,7 +1,7 @@
-package infrastructure
+package driver
 
 import (
-	"api/interfaces/controllers"
+	"api/adapter/controllers"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

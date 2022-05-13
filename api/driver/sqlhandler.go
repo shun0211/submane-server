@@ -1,8 +1,8 @@
-package infrastructure
+package driver
 
 import (
+	"api/adapter/database"
 	"api/domain"
-	"api/interfaces/controllers/database"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"api/interfaces/controllers/database"
+	"api/adapter/database"
 	"api/usecase"
 
 	"github.com/labstack/echo/v4"
