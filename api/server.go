@@ -1,7 +1,9 @@
 package main
 
-import "api/infrastructure"
+import (
+	"api/driver"
+)
 
 func main() {
-	infrastructure.Init()
+	driver.Init()
 }

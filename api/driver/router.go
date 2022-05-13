@@ -27,6 +27,7 @@ func Init() {
 
 	// Subscription CRUD
 	e.GET("/subscriptions", func(c echo.Context) error { return subscriptionController.Index(c) })
+	e.POST("/subscriptions", func(c echo.Context) error { return subscriptionController.Create(c) })
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))

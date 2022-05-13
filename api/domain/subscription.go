@@ -9,13 +9,12 @@ import (
 type Subscriptions []Subscription
 
 type Subscription struct {
-	gorm.Model
 	// NOTE: IDフィールドは自動で主キーとして扱われる
-	ID int
+	gorm.Model
 	Name string
 	Price int
-	ContractDate time.Time
-	UpdateDate time.Time
-	UserId int
+	ContractAt time.Time
+	UpdateAt time.Time
+	UserID int
 	User User
 }
