@@ -11,6 +11,7 @@ services:
     ports:
       - "1323:1323"
       - "2345:2345"
+    command: air -c .air.toml
     depends_on:
       - postgres
     # NOTE: Docker上でdelveを利用する為の設定
