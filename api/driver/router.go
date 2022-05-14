@@ -19,6 +19,9 @@ func Init() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
+	// Login
+	e.POST("/login", func(c echo.Context) error { return userController.Login(c) })
+
 	// User CRUD
 	e.GET("/users", func(c echo.Context) error { return userController.Index(c) })
 	e.GET("/user/:id", func(c echo.Context) error { return userController.Show(c) })

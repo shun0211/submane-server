@@ -8,7 +8,6 @@ type UserRepository struct {
 }
 
 // NOTE: usecaseでFindByIdなどのインターフェースが定義されているので、外側にあるcontroller(presenter)がインターフェースを実装する
-
 // NOTE: returnではuserとerrが返る
 func (repo *UserRepository) FindById(id int) (user domain.User, err error) {
 	if err = repo.Find(&user, id).Error; err != nil {
@@ -40,6 +39,13 @@ func (repo *UserRepository) Update(u domain.User) (user domain.User, err error) 
 
 func (repo *UserRepository) DeleteById(user domain.User) (err error) {
 	if err = repo.Delete(&user).Error; err != nil {
+		return
+	}
+	return
+}
+
+func (repo *UserRepository) FindByEmail(email string) (user domain.User, err error) {
+	if err = repo.Find(&user, "email = ?", email).Error; err != nil {
 		return
 	}
 	return

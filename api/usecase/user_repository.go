@@ -8,4 +8,5 @@ type UserRepository interface {
 	Store(domain.User) (domain.User, error)
 	Update(domain.User) (domain.User, error)
 	DeleteById(domain.User) error
+	FindByEmail(email string) (domain.User, error)
 }
