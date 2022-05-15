@@ -65,6 +65,17 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 	return
 }
 
+func (controller *UserController) Logout(c echo.Context) (err error) {
+	cookie := new(http.Cookie)
+	cookie.Value = ""
+	cookie.Expires = time.Now().Add(-time.Hour)
+	cookie.HttpOnly = true
+	c.SetCookie(cookie)
+
+	c.JSON(200, "logout")
+	return
+}
+
 func (controller *UserController) Show(c echo.Context) (err error) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	user, err := controller.Interactor.UserById(id)
