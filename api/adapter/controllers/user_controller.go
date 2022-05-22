@@ -4,12 +4,17 @@ import (
 	"api/adapter/database"
 	"api/domain"
 	"api/usecase"
+	"context"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
 	"time"
 
+	firebase "firebase.google.com/go"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
+	"google.golang.org/api/option"
 )
 
 type UserController struct {
@@ -99,6 +104,30 @@ func (controller *UserController) Index(c echo.Context) (err error) {
 
 func (controller *UserController) Create(c echo.Context) (err error) {
 	// NOTE: ユーザの構造体を作成
+	opt := option.WithCredentialsFile(os.Getenv("FIREBASE_KEYFILE_JSON"))
+  app, err := firebase.NewApp(context.Background(), nil, opt)
+  if err != nil {
+		c.JSON(500, NewError(err))
+    return
+  }
+
+	client, err := app.Auth(context.Background())
+	if err != nil {
+		c.JSON(500, NewError(err))
+		return
+	}
+
+	auth := c.Request().Header.Get("Authorization")
+	idToken := strings.Replace(auth, "Bearer ", "", 1)
+	// NOTE: Farebaseへトークンの署名の検証を行っている
+	// https://firebase.google.com/docs/admin/setup?hl=ja
+	// ここではデコードしたトークンは使わないため、_としている
+	_, err = client.VerifyIDToken(context.Background(), idToken)
+	if err != nil {
+		c.JSON(400, NewError(err))
+		return
+	}
+
 	u := domain.User{}
 	c.Bind(&u)
 	u.SetUid(c.FormValue("uid"))
@@ -107,13 +136,28 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 		c.JSON(400, err.Error())
 		return
 	}
+
 	user, err := controller.Interactor.Add(u)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
 	}
-	c.JSON(201, user)
-	return
+
+	cookie := new(http.Cookie)
+	cookie.Name = "submane"
+	cookie.Value = idToken
+	cookie.Expires = time.Now().Add(24 * time.Hour)
+	// NOTE: https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Set-Cookie
+	// JavaScript が Document.cookie プロパティなどを介してこのクッキーにアクセスすることを禁止します。
+	cookie.HttpOnly = true
+	// クッキーは、リクエストが SSL と HTTPS プロトコルを使用して行われた場合にのみサーバーに送信されます。
+	// cookie.Secure = true
+	cookie.Path = "/"
+
+	c.SetCookie(cookie)
+	return c.String(http.StatusOK, "write a cookie: ")
+	// c.JSON(201, user)
+	// return
 }
 
 func (controller *UserController) Save(c echo.Context) (err error) {
