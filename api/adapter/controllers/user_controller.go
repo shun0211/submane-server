@@ -73,7 +73,7 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 		Subject: strconv.Itoa(int(user.ID)),
 		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
 	}
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte("secret"))
+	_, err = jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte("secret"))
 	if err != nil {
 		c.JSON(500, err.Error())
 		return
@@ -81,8 +81,8 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 
 	// NOTE: Cookieへ書き込み
 	cookie := new(http.Cookie)
-	cookie.Name = user.Name
-	cookie.Value = token
+	cookie.Name = "uid"
+	cookie.Value = string(user.Uid)
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	cookie.HttpOnly = true
 	c.SetCookie(cookie)
@@ -93,6 +93,7 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 
 func (controller *UserController) Logout(c echo.Context) (err error) {
 	cookie := new(http.Cookie)
+	cookie.Name = "uid"
 	cookie.Value = ""
 	cookie.Expires = time.Now().Add(-time.Hour)
 	cookie.HttpOnly = true
@@ -103,12 +104,24 @@ func (controller *UserController) Logout(c echo.Context) (err error) {
 }
 
 func (controller *UserController) Show(c echo.Context) (err error) {
+	cookie, err := c.Cookie("uid")
+	if err != nil {
+		c.JSON(401, NewError((err)))
+		return
+	}
+
 	id, _ := strconv.Atoi(c.Param("id"))
 	user, err := controller.Interactor.UserById(id)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
 	}
+
+	if err = user.CompareUid(cookie.Value); err != nil {
+		c.JSON(401, err.Error())
+		return
+	}
+
 	c.JSON(200, user)
 	return
 }
@@ -165,8 +178,8 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 	}
 
 	cookie := new(http.Cookie)
-	cookie.Name = "submane"
-	cookie.Value = idToken
+	cookie.Name = "uid"
+	cookie.Value = string(user.Uid)
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	// NOTE: https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Set-Cookie
 	// JavaScript が Document.cookie プロパティなどを介してこのクッキーにアクセスすることを禁止します。
@@ -176,7 +189,6 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 	cookie.Path = "/"
 
 	c.SetCookie(cookie)
-	// return c.String(http.StatusOK, "write a cookie: ")
 	c.JSON(201, user)
 	return
 }
