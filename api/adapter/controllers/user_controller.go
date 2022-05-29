@@ -33,6 +33,27 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 }
 
 func (controller *UserController) Login(c echo.Context) (err error) {
+	opt := option.WithCredentialsFile(os.Getenv("FIREBASE_KEYFILE_JSON"))
+  app, err := firebase.NewApp(context.Background(), nil, opt)
+  if err != nil {
+		c.JSON(500, NewError(err))
+    return
+  }
+
+	client, err := app.Auth(context.Background())
+	if err != nil {
+		c.JSON(500, NewError(err))
+		return
+	}
+
+	auth := c.Request().Header.Get("Authorization")
+	idToken := strings.Replace(auth, "Bearer ", "", 1)
+	_, err = client.VerifyIDToken(context.Background(), idToken)
+	if err != nil {
+		c.JSON(400, NewError(err))
+		return
+	}
+
 	// NOTE: JSONデータの場合、下のようにしないとBodyのデータを取得できない FormValueは使えない
 	userParam := new(domain.User)
 	c.Bind(userParam)
@@ -155,9 +176,9 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 	cookie.Path = "/"
 
 	c.SetCookie(cookie)
-	return c.String(http.StatusOK, "write a cookie: ")
-	// c.JSON(201, user)
-	// return
+	// return c.String(http.StatusOK, "write a cookie: ")
+	c.JSON(201, user)
+	return
 }
 
 func (controller *UserController) Save(c echo.Context) (err error) {

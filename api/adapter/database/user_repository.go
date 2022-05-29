@@ -27,6 +27,7 @@ func (repo *UserRepository) Store(u domain.User) (user domain.User, err error) {
 	if err = repo.Create(&u).Error; err != nil {
 		return
 	}
+	user = u
 	return
 }
 
@@ -34,6 +35,7 @@ func (repo *UserRepository) Update(u domain.User) (user domain.User, err error) 
 	if err = repo.Save(&u).Error; err != nil {
 		return
 	}
+	user = u
 	return
 }
 
