@@ -15,5 +15,6 @@ type Subscription struct {
 	Price int `validate:"required"`
 	ContractAt time.Time
 	UserID int `validate:"required"`
-	User User
+	// HACK:" Key: 'Subscription.User.Email' Error:Field validation for 'Email' failed on the 'required'となるので、一旦バリデーション無視
+	User User `validate:"-"`
 }

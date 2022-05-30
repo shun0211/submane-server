@@ -18,5 +18,6 @@ func(repo *SubscriptionRepository) Store(s domain.Subscription) (subscription do
 	if err = repo.Create(&s).Error; err != nil {
 		return
 	}
+	subscription = s
 	return
 }
