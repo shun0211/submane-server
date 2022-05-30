@@ -1,17 +1,21 @@
 package domain
 
 import (
+	"time"
+
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 type Users []User
 
 type User struct {
-	gorm.Model
-	Name string `json:"name"`
-	Email string `json:"email" validate:"required"`
-	Uid []byte `json:"uid" validate:"required"`
+	ID        uint        `gorm:"primary_key" json:"id"`
+	CreatedAt *time.Time  `json:"created_at"`
+	UpdatedAt *time.Time  `json:"updated_at"`
+	DeletedAt *time.Time  `json:"deleted_at"`
+	Name string           `json:"name"`
+	Email string          `json:"email" validate:"required"`
+	Uid []byte            `json:"uid" validate:"required"`
 }
 
 func (user *User) SetUid(uid string) {
