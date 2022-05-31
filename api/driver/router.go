@@ -33,7 +33,10 @@ func Init() {
 
 	// Subscription CRUD
 	e.GET("/subscriptions", func(c echo.Context) error { return subscriptionController.Index(c) })
+	e.GET("/subscriptions/:id", func(c echo.Context) error { return subscriptionController.Show(c) })
 	e.POST("/subscriptions", func(c echo.Context) error { return subscriptionController.Create(c) })
+	e.PUT("/subscriptions/:id", func(c echo.Context) error { return subscriptionController.Save(c) })
+	e.DELETE("/subscriptions/:id", func(c echo.Context) error { return subscriptionController.Delete(c) })
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))

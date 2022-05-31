@@ -7,6 +7,13 @@ type SubscriptionRepository struct {
 	SqlHandler
 }
 
+func (repo *SubscriptionRepository) FindById(id int) (subscription domain.Subscription, err error) {
+	if err = repo.Find(&subscription, id).Error; err != nil {
+		return
+	}
+	return
+}
+
 func (repo *SubscriptionRepository) FindAll() (subscriptions domain.Subscriptions, err error) {
 	if err = repo.Find(&subscriptions).Error; err != nil {
 		return
@@ -19,5 +26,20 @@ func(repo *SubscriptionRepository) Store(s domain.Subscription) (subscription do
 		return
 	}
 	subscription = s
+	return
+}
+
+func(repo *SubscriptionRepository) Update(s domain.Subscription) (subscription domain.Subscription, err error) {
+	if err = repo.Save(&s).Error; err != nil {
+		return
+	}
+	subscription = s
+	return
+}
+
+func(repo *SubscriptionRepository) DeleteById(s domain.Subscription) (err error) {
+	if err = repo.Delete(&s).Error; err != nil {
+		return
+	}
 	return
 }

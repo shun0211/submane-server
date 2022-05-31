@@ -103,6 +103,16 @@ func (controller *UserController) Logout(c echo.Context) (err error) {
 	return
 }
 
+func (controller *UserController) Index(c echo.Context) (err error) {
+	users, err := controller.Interactor.Users()
+	if err != nil {
+		c.JSON(500, NewError(err))
+		return
+	}
+	c.JSON(200, users)
+	return
+}
+
 func (controller *UserController) Show(c echo.Context) (err error) {
 	cookie, err := c.Cookie("uid")
 	if err != nil {
@@ -123,16 +133,6 @@ func (controller *UserController) Show(c echo.Context) (err error) {
 	}
 
 	c.JSON(200, user)
-	return
-}
-
-func (controller *UserController) Index(c echo.Context) (err error) {
-	users, err := controller.Interactor.Users()
-	if err != nil {
-		c.JSON(500, NewError(err))
-		return
-	}
-	c.JSON(200, users)
 	return
 }
 

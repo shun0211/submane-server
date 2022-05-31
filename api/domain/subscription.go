@@ -8,7 +8,7 @@ type Subscriptions []Subscription
 
 type Subscription struct {
 	// NOTE: IDフィールドは自動で主キーとして扱われる
-	ID        uint        `gorm:"primary_key" json:"id"`
+	ID        int        `gorm:"primary_key" json:"id"`
 	CreatedAt *time.Time  `json:"created_at"`
 	UpdatedAt *time.Time  `json:"updated_at"`
 	DeletedAt *time.Time  `json:"deleted_at"`
