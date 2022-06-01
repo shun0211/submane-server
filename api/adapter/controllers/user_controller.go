@@ -123,7 +123,7 @@ func (controller *UserController) Show(c echo.Context) (err error) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	user, err := controller.Interactor.UserById(id)
 	if err != nil {
-		c.JSON(500, NewError(err))
+		c.JSON(404, NewError(err))
 		return
 	}
 

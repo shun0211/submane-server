@@ -14,7 +14,7 @@ type Subscription struct {
 	DeletedAt *time.Time  `json:"deleted_at"`
 	Name string           `json:"name" validate:"required"`
 	Price int             `json:"price" validate:"required"`
-	ContractAt time.Time  `json:"contract_at" validate:"required"`
+	ContractAt time.Time  `json:"contract_at"`
 	UserID int            `json:"userId" validate:"required"`
 	// HACK:" Key: 'Subscription.User.Email' Error:Field validation for 'Email' failed on the 'required'となるので、一旦バリデーション無視
 	User User             `validate:"-"`

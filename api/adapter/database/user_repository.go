@@ -10,7 +10,7 @@ type UserRepository struct {
 // NOTE: usecaseでFindByIdなどのインターフェースが定義されているので、外側にあるcontroller(presenter)がインターフェースを実装する
 // NOTE: returnではuserとerrが返る
 func (repo *UserRepository) FindById(id int) (user domain.User, err error) {
-	if err = repo.Find(&user, id).Error; err != nil {
+	if err = repo.First(&user, id).Error; err != nil {
 		return
 	}
 	return

@@ -8,7 +8,7 @@ type SubscriptionRepository struct {
 }
 
 func (repo *SubscriptionRepository) FindById(id int) (subscription domain.Subscription, err error) {
-	if err = repo.Find(&subscription, id).Error; err != nil {
+	if err = repo.First(&subscription, id).Error; err != nil {
 		return
 	}
 	return
