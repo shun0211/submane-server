@@ -205,7 +205,7 @@ func (controller *UserController) Save(c echo.Context) (err error) {
 		c.JSON(500, NewError(err))
 		return
 	}
-	c.JSON(201, user)
+	c.JSON(200, user)
 	return
 }
 
