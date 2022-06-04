@@ -225,3 +225,21 @@ func (controller *UserController) Delete(c echo.Context) (err error) {
 	c.JSON(200, user)
 	return
 }
+
+
+func (controller *UserController) ShowCurrentUser(c echo.Context) (err error) {
+	cookie, err := c.Cookie("userId")
+	if err != nil {
+		c.JSON(401, NewError((err)))
+		return
+	}
+
+	id, _ := strconv.Atoi(cookie.Value)
+	user, err := controller.Interactor.UserById(id)
+	if err != nil {
+		c.JSON(500, NewError(err))
+		return
+	}
+	c.JSON(200, user)
+	return
+}
