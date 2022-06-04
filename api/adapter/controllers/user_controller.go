@@ -114,21 +114,21 @@ func (controller *UserController) Index(c echo.Context) (err error) {
 }
 
 func (controller *UserController) Show(c echo.Context) (err error) {
-	cookie, err := c.Cookie("uid")
+	cookie, err := c.Cookie("userId")
 	if err != nil {
 		c.JSON(401, NewError((err)))
 		return
 	}
 
 	id, _ := strconv.Atoi(c.Param("id"))
-	user, err := controller.Interactor.UserById(id)
-	if err != nil {
-		c.JSON(404, NewError(err))
+	if cookie.Value == c.Param("id") {
+		c.JSON(401, err.Error())
 		return
 	}
 
-	if err = user.CompareUid(cookie.Value); err != nil {
-		c.JSON(401, err.Error())
+	user, err := controller.Interactor.UserById(id)
+	if err != nil {
+		c.JSON(404, NewError(err))
 		return
 	}
 
@@ -178,8 +178,8 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 	}
 
 	cookie := new(http.Cookie)
-	cookie.Name = "uid"
-	cookie.Value = string(user.Uid)
+	cookie.Name = "userId"
+	cookie.Value = strconv.Itoa(int(user.ID))
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	// NOTE: https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Set-Cookie
 	// JavaScript が Document.cookie プロパティなどを介してこのクッキーにアクセスすることを禁止します。

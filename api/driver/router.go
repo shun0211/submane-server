@@ -30,6 +30,7 @@ func Init() {
 	e.POST("/users", func(c echo.Context) error { return userController.Create(c) })
 	e.PUT("/user/:id", func(c echo.Context) error { return userController.Save(c) })
 	e.DELETE("/user/:id", func(c echo.Context) error { return userController.Delete(c) })
+	e.GET("/current-user", func(c echo.Context) error { return userController.ShowCurrentUser(c) })
 
 	// Subscription CRUD
 	e.GET("/subscriptions", func(c echo.Context) error { return subscriptionController.Index(c) })
