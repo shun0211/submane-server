@@ -32,6 +32,13 @@ services:
       - postgres-data:/var/lib/pgadmin
     ports:
       - 5433:5432
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - '3443:443'
+    environment:
+      STAGE: local
+      DOMAINS: 'localhost -> http://host.docker.internal:1323'
 volumes:
   postgres-data:
     driver: local

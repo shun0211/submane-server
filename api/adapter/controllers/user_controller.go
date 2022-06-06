@@ -12,7 +12,7 @@ import (
 	"time"
 
 	firebase "firebase.google.com/go"
-	"github.com/golang-jwt/jwt"
+	// "github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"google.golang.org/api/option"
 )
@@ -69,22 +69,26 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 		return
 	}
 
-	payload := jwt.StandardClaims{
-		Subject: strconv.Itoa(int(user.ID)),
-		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-	}
-	_, err = jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte("secret"))
-	if err != nil {
-		c.JSON(500, err.Error())
-		return
-	}
+	// payload := jwt.StandardClaims{
+	// 	Subject: strconv.Itoa(int(user.ID)),
+	// 	ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+	// }
+	// _, err = jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte("secret"))
+	// if err != nil {
+	// 	c.JSON(500, err.Error())
+	// 	return
+	// }
 
 	// NOTE: Cookieへ書き込み
 	cookie := new(http.Cookie)
-	cookie.Name = "uid"
-	cookie.Value = string(user.Uid)
+	cookie.Name = "userId"
+	cookie.Value = strconv.Itoa(int(user.ID))
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	cookie.HttpOnly = true
+	cookie.Path = "/"
+	cookie.SameSite = http.SameSiteNoneMode
+	cookie.Secure = true
+	// cookie.Domain = "localhost"
 	c.SetCookie(cookie)
 
 	c.JSON(200, user)
@@ -93,10 +97,11 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 
 func (controller *UserController) Logout(c echo.Context) (err error) {
 	cookie := new(http.Cookie)
-	cookie.Name = "uid"
+	cookie.Name = "userId"
 	cookie.Value = ""
-	cookie.Expires = time.Now().Add(-time.Hour)
-	cookie.HttpOnly = true
+	cookie.Path = "/"
+	cookie.SameSite = http.SameSiteNoneMode
+	cookie.Secure = true
 	c.SetCookie(cookie)
 
 	c.JSON(200, "logout")
