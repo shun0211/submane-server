@@ -37,7 +37,7 @@ func (t MyTime) Value() (driver.Value, error) {
 }
 
 func (t MyTime) MarshalJSON() ([]byte, error) {
-	output := fmt.Sprintf("\"%s\"", t.Format("2006-01-02"))
+	output := fmt.Sprintf("\"%s\"", t.Format("2006/01/02"))
 	return []byte(output), nil
 }
 
