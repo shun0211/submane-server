@@ -88,7 +88,6 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 	cookie.Path = "/"
 	cookie.SameSite = http.SameSiteNoneMode
 	cookie.Secure = true
-	// cookie.Domain = "localhost"
 	c.SetCookie(cookie)
 
 	c.JSON(200, user)
@@ -99,6 +98,7 @@ func (controller *UserController) Logout(c echo.Context) (err error) {
 	cookie := new(http.Cookie)
 	cookie.Name = "userId"
 	cookie.Value = ""
+	cookie.HttpOnly = true
 	cookie.Path = "/"
 	cookie.SameSite = http.SameSiteNoneMode
 	cookie.Secure = true
@@ -189,9 +189,10 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 	// NOTE: https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Set-Cookie
 	// JavaScript が Document.cookie プロパティなどを介してこのクッキーにアクセスすることを禁止します。
 	cookie.HttpOnly = true
-	// クッキーは、リクエストが SSL と HTTPS プロトコルを使用して行われた場合にのみサーバーに送信されます。
-	// cookie.Secure = true
 	cookie.Path = "/"
+	cookie.SameSite = http.SameSiteNoneMode
+	// クッキーは、リクエストが SSL と HTTPS プロトコルを使用して行われた場合にのみサーバーに送信されます。
+	cookie.Secure = true
 
 	c.SetCookie(cookie)
 	c.JSON(201, user)

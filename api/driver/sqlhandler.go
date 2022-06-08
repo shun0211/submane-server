@@ -22,6 +22,7 @@ func NewSqlHandler() database.SqlHandler {
 	}
 
 	// NOTE: Auto Migration
+	// conn.Migrator().DropTable("subscriptions")
 	conn.AutoMigrate(domain.User{}, domain.Subscription{})
 
 	sqlHandler := &SqlHandler{Conn: conn}

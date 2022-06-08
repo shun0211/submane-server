@@ -32,6 +32,7 @@ services:
       - postgres-data:/var/lib/pgadmin
     ports:
       - 5433:5432
+    shm_size: '256mb'
   https-portal:
     image: steveltn/https-portal:1
     ports:
