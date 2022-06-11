@@ -4,9 +4,13 @@ import (
 	"api/adapter/database"
 	"api/domain"
 	"api/usecase"
+	"api/utils"
 	"strconv"
-
+	// ut "github.com/go-playground/universal-translator"
+	// "github.com/go-playground/locales/ja"
 	"github.com/labstack/echo/v4"
+	// "gopkg.in/go-playground/validator.v9"
+	// ja_translations "gopkg.in/go-playground/validator.v9/translations/ja"
 )
 
 type SubscriptionController struct {
@@ -49,7 +53,8 @@ func(controller *SubscriptionController) Create(c echo.Context) (err error) {
 	s := domain.Subscription{}
 	c.Bind(&s)
 	if err = c.Validate(s); err != nil {
-		c.JSON(400, err.Error())
+		messages := utils.GetErrorMessages(err)
+		c.JSON(400, messages)
 		return
 	}
 	subscription, err := controller.Interactor.Add(s)
@@ -98,3 +103,16 @@ func(controller *SubscriptionController) Delete(c echo.Context) (err error) {
 	c.JSON(200, subscription)
 	return
 }
+
+// func GetErrorMessage(err error) []string {
+// 	var messages []string
+// 	ja := ja.New()
+// 	uni := ut.New(ja, ja)
+// 	trans, _ := uni.GetTranslator("ja")
+// 	newError := err.(validator.ValidationErrors).Translate(trans)
+// 	print(newError)
+// 	for _, m := range err.(validator.ValidationErrors).Translate(trans) {
+// 		messages = append(messages, m)
+// 	}
+// 	return messages
+// }

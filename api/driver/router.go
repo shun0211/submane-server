@@ -2,6 +2,7 @@ package driver
 
 import (
 	"api/adapter/controllers"
+	"api/utils"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -11,7 +12,7 @@ import (
 func Init() {
 	// Echo instance
 	e := echo.New()
-	e.Validator = NewValidator()
+	e.Validator = utils.NewValidator()
 
 	userController := controllers.NewUserController(NewSqlHandler())
 	subscriptionController := controllers.NewSubscriptionController(NewSqlHandler())
@@ -23,7 +24,7 @@ func Init() {
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		// NOTE: クッキーのような資格情報を含んでいてAccess-Control-Allow-Origin: *のようにワイルドカードが指定された場合、ブラウザは資格情報を破棄する
 		// NOTE: 実際のオリジンを指定する必要がある
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"http://localhost:3001"},
 		// NOTE: プリフライトのレスポンスで用いられ、リソースへのアクセス時に許可するメソッドを指定する
 		AllowMethods:     []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
 		// NOTE: プリフライトでの場合、実際のリクエストを資格情報付きで行うことができることを示す
