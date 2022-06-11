@@ -15,9 +15,9 @@ type Subscription struct {
 	CreatedAt *time.Time      `json:"createdAt"`
 	UpdatedAt *time.Time      `json:"updatedAt"`
 	DeletedAt *time.Time      `json:"deletedAt"`
-	Name string               `json:"name" validate:"required"`
-	Price int                 `json:"price" validate:"required"`
-	ContractAt MyTime         `json:"contractAt"`
+	Name string               `json:"name" validate:"required" jaFieldName:"サブスクリプション名"`
+	Price int                 `json:"price" validate:"required" jaFieldName:"月額料金"`
+	ContractAt MyTime         `json:"contractAt" jaFieldName:"契約日"`
 	UserID int                `json:"userId" validate:"required"`
 	// HACK:" Key: 'Subscription.User.Email' Error:Field validation for 'Email' failed on the 'required'となるので、一旦バリデーション無視
 	User User                 `validate:"-" gorm:"foreignKey:UserID"`

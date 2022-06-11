@@ -1,9 +1,11 @@
 package utils
 
 import (
-	validator "gopkg.in/go-playground/validator.v9"
+	"reflect"
+
 	ja "github.com/go-playground/locales/ja"
 	ut "github.com/go-playground/universal-translator"
+	validator "gopkg.in/go-playground/validator.v9"
 	ja_translations "gopkg.in/go-playground/validator.v9/translations/ja"
 )
 
@@ -22,6 +24,16 @@ func NewValidator() *Validator {
 
 	trans, _ := uni.GetTranslator("ja")
 	validate = validator.New()
+
+	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		fieldName := fld.Tag.Get("jaFieldName")
+		if fieldName == "-" {
+			return ""
+		}
+
+		return fieldName
+	})
+
 	ja_translations.RegisterDefaultTranslations(validate, trans)
 
 	return &Validator{
