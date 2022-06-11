@@ -4,6 +4,7 @@ import (
 	"api/adapter/database"
 	"api/domain"
 	"api/usecase"
+	"api/utils"
 	"context"
 	"net/http"
 	"os"
@@ -12,7 +13,7 @@ import (
 	"time"
 
 	firebase "firebase.google.com/go"
-	// "github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"google.golang.org/api/option"
 )
@@ -69,20 +70,20 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 		return
 	}
 
-	// payload := jwt.StandardClaims{
-	// 	Subject: strconv.Itoa(int(user.ID)),
-	// 	ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-	// }
-	// _, err = jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte("secret"))
-	// if err != nil {
-	// 	c.JSON(500, err.Error())
-	// 	return
-	// }
+	payload := jwt.StandardClaims{
+		Subject: strconv.Itoa(int(user.ID)),
+		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+	}
+	jwt, err := jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte("secret"))
+	if err != nil {
+		c.JSON(500, err.Error())
+		return
+	}
 
 	// NOTE: Cookieへ書き込み
 	cookie := new(http.Cookie)
 	cookie.Name = "userId"
-	cookie.Value = strconv.Itoa(int(user.ID))
+	cookie.Value = jwt
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	cookie.HttpOnly = true
 	cookie.Path = "/"
@@ -163,7 +164,7 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 	// ここではデコードしたトークンは使わないため、_としている
 	_, err = client.VerifyIDToken(context.Background(), idToken)
 	if err != nil {
-		c.JSON(400, NewError(err))
+		c.JSON(400, "不正なIDトークンです")
 		return
 	}
 
@@ -172,7 +173,8 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 	u.SetUid(c.FormValue("uid"))
 
 	if err = c.Validate(&u); err != nil {
-		c.JSON(400, err.Error())
+		messages := utils.GetErrorMessages(err)
+		c.JSON(400, messages)
 		return
 	}
 
@@ -182,9 +184,19 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 		return
 	}
 
+	payload := jwt.StandardClaims{
+		Subject: strconv.Itoa(int(user.ID)),
+		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+	}
+	jwt, err := jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte("secret"))
+	if err != nil {
+		c.JSON(500, err.Error())
+		return
+	}
+
 	cookie := new(http.Cookie)
 	cookie.Name = "userId"
-	cookie.Value = strconv.Itoa(int(user.ID))
+	cookie.Value = jwt
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	// NOTE: https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Set-Cookie
 	// JavaScript が Document.cookie プロパティなどを介してこのクッキーにアクセスすることを禁止します。

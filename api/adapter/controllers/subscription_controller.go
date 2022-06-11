@@ -6,11 +6,7 @@ import (
 	"api/usecase"
 	"api/utils"
 	"strconv"
-	// ut "github.com/go-playground/universal-translator"
-	// "github.com/go-playground/locales/ja"
 	"github.com/labstack/echo/v4"
-	// "gopkg.in/go-playground/validator.v9"
-	// ja_translations "gopkg.in/go-playground/validator.v9/translations/ja"
 )
 
 type SubscriptionController struct {
@@ -103,16 +99,3 @@ func(controller *SubscriptionController) Delete(c echo.Context) (err error) {
 	c.JSON(200, subscription)
 	return
 }
-
-// func GetErrorMessage(err error) []string {
-// 	var messages []string
-// 	ja := ja.New()
-// 	uni := ut.New(ja, ja)
-// 	trans, _ := uni.GetTranslator("ja")
-// 	newError := err.(validator.ValidationErrors).Translate(trans)
-// 	print(newError)
-// 	for _, m := range err.(validator.ValidationErrors).Translate(trans) {
-// 		messages = append(messages, m)
-// 	}
-// 	return messages
-// }
