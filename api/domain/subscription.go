@@ -37,7 +37,7 @@ func (t *MyTime) Scan(value interface{}) error {
 	return nil
 }
 
-func (t *MyTime) Value() (driver.Value, error) {
+func (t MyTime) Value() (driver.Value, error) {
 	return t.Time, nil
 }
 

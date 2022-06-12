@@ -100,7 +100,8 @@ func (controller *SubscriptionController) Save(c echo.Context) (err error) {
 
 	c.Bind(&subscription)
 	if err = c.Validate(subscription); err != nil {
-		c.JSON(400, NewError(err.Error(), ""))
+		messages := utils.GetErrorMessages(err)
+		c.JSON(400, messages)
 		return
 	}
 
