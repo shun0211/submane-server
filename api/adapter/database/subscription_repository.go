@@ -14,8 +14,8 @@ func (repo *SubscriptionRepository) FindById(id int) (subscription domain.Subscr
 	return
 }
 
-func (repo *SubscriptionRepository) FindAll() (subscriptions domain.Subscriptions, err error) {
-	if err = repo.Find(&subscriptions).Error; err != nil {
+func (repo *SubscriptionRepository) FindAll(userId int) (subscriptions domain.Subscriptions, err error) {
+	if err = repo.Find(&subscriptions, "user_id = ?", userId).Error; err != nil {
 		return
 	}
 	return

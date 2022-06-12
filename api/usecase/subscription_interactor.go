@@ -11,8 +11,8 @@ func (interactor *SubscriptionInteractor) SubscriptionById(id int) (subscription
 	return
 }
 
-func (interactor *SubscriptionInteractor) Subscriptions() (subscriptions domain.Subscriptions, err error) {
-	subscriptions, err = interactor.SubscriptionRepository.FindAll()
+func (interactor *SubscriptionInteractor) Subscriptions(userId int) (subscriptions domain.Subscriptions, err error) {
+	subscriptions, err = interactor.SubscriptionRepository.FindAll(userId)
 	return
 }
 

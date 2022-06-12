@@ -7,7 +7,6 @@ import (
 	"api/utils"
 	"strconv"
 
-	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
 
@@ -25,8 +24,16 @@ func NewSubscriptionController(sqlHandler database.SqlHandler) *SubscriptionCont
 	}
 }
 
+// HACK: すべてでverifyCookieをしているので共通化したい
 func (controller *SubscriptionController) Index(c echo.Context) (err error) {
-	subscriptions, err := controller.Interactor.Subscriptions()
+	_, err = verifyCookie(c)
+	if err != nil {
+		c.JSON(401, err)
+		return
+	}
+
+	userId, _ := strconv.Atoi(c.QueryParam("userId"))
+	subscriptions, err := controller.Interactor.Subscriptions(userId)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
@@ -36,6 +43,12 @@ func (controller *SubscriptionController) Index(c echo.Context) (err error) {
 }
 
 func (controller *SubscriptionController) Show(c echo.Context) (err error) {
+	_, err = verifyCookie(c)
+	if err != nil {
+		c.JSON(401, err)
+		return
+	}
+
 	id, _ := strconv.Atoi(c.Param("id"))
 	subscription, err := controller.Interactor.SubscriptionById(id)
 	if err != nil {
@@ -48,32 +61,14 @@ func (controller *SubscriptionController) Show(c echo.Context) (err error) {
 }
 
 func(controller *SubscriptionController) Create(c echo.Context) (err error) {
-	cookie, err := c.Cookie("userId")
+	_, err = verifyCookie(c)
 	if err != nil {
-		c.JSON(401, NewError(err))
+		c.JSON(401, err)
 		return
 	}
-
-	token, err := jwt.ParseWithClaims(cookie.Value, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte("secret"), nil
-	})
-
-	if err != nil || !token.Valid {
-		c.JSON(401, NewError(err))
-		return
-	}
-
-	payload := token.Claims.(*jwt.StandardClaims)
-	userId, _ := strconv.Atoi(payload.Subject)
-	print(userId)
 
 	s := domain.Subscription{}
 	c.Bind(&s)
-
-	if s.UserID != userId {
-		c.JSON(400, "Invalid Cookie or userID")
-		return
-	}
 
 	if err = c.Validate(s); err != nil {
 		messages := utils.GetErrorMessages(err)
@@ -91,8 +86,13 @@ func(controller *SubscriptionController) Create(c echo.Context) (err error) {
 }
 
 func (controller *SubscriptionController) Save(c echo.Context) (err error) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	_, err = verifyCookie(c)
+	if err != nil {
+		c.JSON(401, err)
+		return
+	}
 
+	id, _ := strconv.Atoi(c.Param("id"))
 	subscription, err := controller.Interactor.SubscriptionById(id)
 	if err != nil {
 		c.JSON(500, NewError(err))
@@ -115,6 +115,12 @@ func (controller *SubscriptionController) Save(c echo.Context) (err error) {
 }
 
 func(controller *SubscriptionController) Delete(c echo.Context) (err error) {
+	_, err = verifyCookie(c)
+	if err != nil {
+		c.JSON(401, err)
+		return
+	}
+
 	id, _ := strconv.Atoi(c.Param("id"))
 	subscription := domain.Subscription{
 		ID: id,
