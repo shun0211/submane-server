@@ -246,24 +246,13 @@ func (controller *UserController) Delete(c echo.Context) (err error) {
 
 
 func (controller *UserController) ShowCurrentUser(c echo.Context) (err error) {
-	cookie, err := c.Cookie("userId")
+	userId, err := verifyCookie(c)
 	if err != nil {
-		c.JSON(401, NewError(err))
+		c.JSON(401, err)
 		return
 	}
 
-	token, err := jwt.ParseWithClaims(cookie.Value, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte("secret"), nil
-	})
-
-	if err != nil || !token.Valid {
-		c.JSON(401, NewError(err))
-		return
-	}
-
-	payload := token.Claims.(*jwt.StandardClaims)
-	id, _ := strconv.Atoi(payload.Subject)
-	user, err := controller.Interactor.UserById(id)
+	user, err := controller.Interactor.UserById(userId)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return

@@ -6,6 +6,8 @@ import (
 	"api/usecase"
 	"api/utils"
 	"strconv"
+
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
 
@@ -46,13 +48,39 @@ func (controller *SubscriptionController) Show(c echo.Context) (err error) {
 }
 
 func(controller *SubscriptionController) Create(c echo.Context) (err error) {
+	cookie, err := c.Cookie("userId")
+	if err != nil {
+		c.JSON(401, NewError(err))
+		return
+	}
+
+	token, err := jwt.ParseWithClaims(cookie.Value, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte("secret"), nil
+	})
+
+	if err != nil || !token.Valid {
+		c.JSON(401, NewError(err))
+		return
+	}
+
+	payload := token.Claims.(*jwt.StandardClaims)
+	userId, _ := strconv.Atoi(payload.Subject)
+	print(userId)
+
 	s := domain.Subscription{}
 	c.Bind(&s)
+
+	if s.UserID != userId {
+		c.JSON(400, "Invalid Cookie or userID")
+		return
+	}
+
 	if err = c.Validate(s); err != nil {
 		messages := utils.GetErrorMessages(err)
 		c.JSON(400, messages)
 		return
 	}
+
 	subscription, err := controller.Interactor.Add(s)
 	if err != nil {
 		c.JSON(500, NewError(err))
