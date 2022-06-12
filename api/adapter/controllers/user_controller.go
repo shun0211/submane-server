@@ -5,14 +5,9 @@ import (
 	"api/domain"
 	"api/usecase"
 	"api/utils"
-	"context"
-	"os"
 	"strconv"
-	"strings"
 
-	firebase "firebase.google.com/go"
 	"github.com/labstack/echo/v4"
-	"google.golang.org/api/option"
 )
 
 type UserController struct {
@@ -31,24 +26,13 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 }
 
 func (controller *UserController) Login(c echo.Context) (err error) {
-	opt := option.WithCredentialsFile(os.Getenv("FIREBASE_KEYFILE_JSON"))
-  app, err := firebase.NewApp(context.Background(), nil, opt)
-  if err != nil {
-		c.JSON(500, NewError(err))
-    return
-  }
-
-	client, err := app.Auth(context.Background())
-	if err != nil {
+	status, err := verifyIDToken(c)
+	if err != nil && status == 500 {
 		c.JSON(500, NewError(err))
 		return
 	}
-
-	auth := c.Request().Header.Get("Authorization")
-	idToken := strings.Replace(auth, "Bearer ", "", 1)
-	_, err = client.VerifyIDToken(context.Background(), idToken)
-	if err != nil {
-		c.JSON(400, NewError(err))
+	if err != nil && status == 400 {
+		c.JSON(400, "不正なIDトークンです")
 		return
 	}
 
@@ -119,27 +103,12 @@ func (controller *UserController) Show(c echo.Context) (err error) {
 }
 
 func (controller *UserController) Create(c echo.Context) (err error) {
-	// NOTE: ユーザの構造体を作成
-	opt := option.WithCredentialsFile(os.Getenv("FIREBASE_KEYFILE_JSON"))
-  app, err := firebase.NewApp(context.Background(), nil, opt)
-  if err != nil {
-		c.JSON(500, NewError(err))
-    return
-  }
-
-	client, err := app.Auth(context.Background())
-	if err != nil {
+	status, err := verifyIDToken(c)
+	if err != nil && status == 500 {
 		c.JSON(500, NewError(err))
 		return
 	}
-
-	auth := c.Request().Header.Get("Authorization")
-	idToken := strings.Replace(auth, "Bearer ", "", 1)
-	// NOTE: Farebaseへトークンの署名の検証を行っている
-	// https://firebase.google.com/docs/admin/setup?hl=ja
-	// ここではデコードしたトークンは使わないため、_としている
-	_, err = client.VerifyIDToken(context.Background(), idToken)
-	if err != nil {
+	if err != nil && status == 400 {
 		c.JSON(400, "不正なIDトークンです")
 		return
 	}
