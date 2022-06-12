@@ -13,6 +13,7 @@ func Process(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		print("before next")
 		err := next(c)
+		// status := strconv.Itoa(c.Response().Status)
 		print("after next")
 		if err != nil {
 			c.Error(err)

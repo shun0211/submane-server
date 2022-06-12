@@ -35,7 +35,7 @@ func (controller *SubscriptionController) Index(c echo.Context) (err error) {
 	userId, _ := strconv.Atoi(c.QueryParam("userId"))
 	subscriptions, err := controller.Interactor.Subscriptions(userId)
 	if err != nil {
-		c.JSON(500, NewError(err))
+		c.JSON(500, NewError(err.Error(), ""))
 		return
 	}
 	c.JSON(200, subscriptions)
@@ -52,7 +52,7 @@ func (controller *SubscriptionController) Show(c echo.Context) (err error) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	subscription, err := controller.Interactor.SubscriptionById(id)
 	if err != nil {
-		c.JSON(404, NewError(err))
+		c.JSON(404, NewError(err.Error(), ""))
 		return
 	}
 
@@ -78,7 +78,7 @@ func(controller *SubscriptionController) Create(c echo.Context) (err error) {
 
 	subscription, err := controller.Interactor.Add(s)
 	if err != nil {
-		c.JSON(500, NewError(err))
+		c.JSON(500, NewError(err.Error(), ""))
 		return
 	}
 	c.JSON(201, subscription)
@@ -95,18 +95,18 @@ func (controller *SubscriptionController) Save(c echo.Context) (err error) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	subscription, err := controller.Interactor.SubscriptionById(id)
 	if err != nil {
-		c.JSON(500, NewError(err))
+		c.JSON(500, NewError(err.Error(), ""))
 	}
 
 	c.Bind(&subscription)
 	if err = c.Validate(subscription); err != nil {
-		c.JSON(400, NewError(err))
+		c.JSON(400, NewError(err.Error(), ""))
 		return
 	}
 
 	subscription, err = controller.Interactor.Update(subscription)
 	if err != nil {
-		c.JSON(500, NewError(err))
+		c.JSON(500, NewError(err.Error(), ""))
 		return
 	}
 
@@ -127,7 +127,7 @@ func(controller *SubscriptionController) Delete(c echo.Context) (err error) {
 	}
 	err = controller.Interactor.DeleteById(subscription)
 	if err != nil {
-		c.JSON(500, NewError(err))
+		c.JSON(500, NewError(err.Error(), ""))
 		return
 	}
 	c.JSON(200, subscription)

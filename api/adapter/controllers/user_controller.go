@@ -28,11 +28,11 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 func (controller *UserController) Login(c echo.Context) (err error) {
 	status, err := verifyIDToken(c)
 	if err != nil && status == 500 {
-		c.JSON(500, NewError(err))
+		c.JSON(500, NewError(err.Error(), ""))
 		return
 	}
 	if err != nil && status == 400 {
-		c.JSON(400, "不正なIDトークンです")
+		c.JSON(400, NewError("不正なIDトークンです👎", ""))
 		return
 	}
 
@@ -42,13 +42,13 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 
 	user, err := controller.Interactor.UserByEmail(userParam.Email)
 	if err != nil {
-		c.JSON(404, err.Error())
+		c.JSON(404, NewError("ユーザが見つかりませんでした😱", "Echo Server Not Found"))
 		return
 	}
 
 	uid := c.FormValue("uid")
 	if err = user.CompareUid(uid); err != nil {
-		c.JSON(401, err.Error())
+		c.JSON(401, NewError("", "Invalid Uid"))
 		return
 	}
 
@@ -72,7 +72,7 @@ func (controller *UserController) Logout(c echo.Context) (err error) {
 func (controller *UserController) Index(c echo.Context) (err error) {
 	users, err := controller.Interactor.Users()
 	if err != nil {
-		c.JSON(500, NewError(err))
+		c.JSON(500, NewError(err.Error(), ""))
 		return
 	}
 	c.JSON(200, users)
@@ -82,7 +82,7 @@ func (controller *UserController) Index(c echo.Context) (err error) {
 func (controller *UserController) Show(c echo.Context) (err error) {
 	cookie, err := c.Cookie("userId")
 	if err != nil {
-		c.JSON(401, NewError(err))
+		c.JSON(401, NewError(err.Error(), ""))
 		return
 	}
 
@@ -94,7 +94,7 @@ func (controller *UserController) Show(c echo.Context) (err error) {
 
 	user, err := controller.Interactor.UserById(id)
 	if err != nil {
-		c.JSON(404, NewError(err))
+		c.JSON(404, NewError(err.Error(), ""))
 		return
 	}
 
@@ -105,11 +105,11 @@ func (controller *UserController) Show(c echo.Context) (err error) {
 func (controller *UserController) Create(c echo.Context) (err error) {
 	status, err := verifyIDToken(c)
 	if err != nil && status == 500 {
-		c.JSON(500, NewError(err))
+		c.JSON(500, NewError(err.Error(), ""))
 		return
 	}
 	if err != nil && status == 400 {
-		c.JSON(400, "不正なIDトークンです")
+		c.JSON(400, NewError("不正なIDトークンです👎", ""))
 		return
 	}
 
@@ -125,7 +125,7 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 
 	user, err := controller.Interactor.Add(u)
 	if err != nil {
-		c.JSON(500, NewError(err))
+		c.JSON(500, NewError(err.Error(), ""))
 		return
 	}
 
@@ -149,7 +149,7 @@ func (controller *UserController) Save(c echo.Context) (err error) {
 	}
 	user, err := controller.Interactor.Update(u)
 	if err != nil {
-		c.JSON(500, NewError(err))
+		c.JSON(500, NewError(err.Error(), ""))
 		return
 	}
 	c.JSON(200, user)
@@ -161,12 +161,12 @@ func (controller *UserController) Delete(c echo.Context) (err error) {
 
 	user, err := controller.Interactor.UserById(id)
 	if err != nil {
-		c.JSON(500, NewError(err))
+		c.JSON(404, NewError("ユーザが見つかりませんでした😱", "Echo Server Not Found"))
 		return
 	}
 	err = controller.Interactor.DeleteById(user)
 	if err != nil {
-		c.JSON(500, NewError(err))
+		c.JSON(500, NewError(err.Error(), ""))
 		return
 	}
 	c.JSON(200, user)
@@ -183,7 +183,7 @@ func (controller *UserController) ShowCurrentUser(c echo.Context) (err error) {
 
 	user, err := controller.Interactor.UserById(userId)
 	if err != nil {
-		c.JSON(500, NewError(err))
+		c.JSON(404, NewError("ユーザが見つかりませんでした😱", "Echo Server Not Found"))
 		return
 	}
 	c.JSON(200, user)
