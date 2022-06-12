@@ -28,11 +28,15 @@ type MyTime struct {
 }
 
 func (t *MyTime) Scan(value interface{}) error {
-	t.Time = value.(time.Time)
+	tm, ok := value.(time.Time)
+	if !ok {
+		return fmt.Errorf("error")
+	}
+	t.Time = tm
 	return nil
 }
 
-func (t MyTime) Value() (driver.Value, error) {
+func (t *MyTime) Value() (driver.Value, error) {
 	return t.Time, nil
 }
 

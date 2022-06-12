@@ -9,6 +9,18 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+func Process(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		print("before next")
+		err := next(c)
+		print("after next")
+		if err != nil {
+			c.Error(err)
+		}
+		return nil
+	}
+}
+
 func Init() {
 	// Echo instance
 	e := echo.New()
@@ -20,7 +32,6 @@ func Init() {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	// e.Use(middleware.CORS())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		// NOTE: クッキーのような資格情報を含んでいてAccess-Control-Allow-Origin: *のようにワイルドカードが指定された場合、ブラウザは資格情報を破棄する
 		// NOTE: 実際のオリジンを指定する必要がある
@@ -30,7 +41,8 @@ func Init() {
 		// NOTE: プリフライトでの場合、実際のリクエストを資格情報付きで行うことができることを示す
 		// NOTE: GETリクエストの場合、リソースとともにこのヘッダーを返さないと、ブラウザがレスポンスを破棄する
 		AllowCredentials: true,
-}))
+	}))
+	e.Use(Process)
 
 	// Login, Logout
 	e.POST("/login", func(c echo.Context) error { return userController.Login(c) })
@@ -38,10 +50,10 @@ func Init() {
 
 	// User CRUD
 	e.GET("/users", func(c echo.Context) error { return userController.Index(c) })
-	e.GET("/user/:id", func(c echo.Context) error { return userController.Show(c) })
+	e.GET("/users/:id", func(c echo.Context) error { return userController.Show(c) })
 	e.POST("/users", func(c echo.Context) error { return userController.Create(c) })
-	e.PUT("/user/:id", func(c echo.Context) error { return userController.Save(c) })
-	e.DELETE("/user/:id", func(c echo.Context) error { return userController.Delete(c) })
+	e.PUT("/users/:id", func(c echo.Context) error { return userController.Save(c) })
+	e.DELETE("/users/:id", func(c echo.Context) error { return userController.Delete(c) })
 	e.GET("/current-user", func(c echo.Context) error { return userController.ShowCurrentUser(c) })
 
 	// Subscription CRUD

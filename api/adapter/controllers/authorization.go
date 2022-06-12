@@ -25,3 +25,5 @@ func verifyCookie(c echo.Context) (userId int, err error) {
 	userId, _ = strconv.Atoi(payload.Subject)
 	return
 }
+
+// NOTE: Cookieの処理移す

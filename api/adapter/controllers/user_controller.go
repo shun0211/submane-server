@@ -61,9 +61,10 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 
 	user, err := controller.Interactor.UserByEmail(userParam.Email)
 	if err != nil {
-		c.JSON(500, err.Error())
+		c.JSON(404, err.Error())
 		return
 	}
+
 	uid := c.FormValue("uid")
 	if err = user.CompareUid(uid); err != nil {
 		c.JSON(401, err.Error())

@@ -47,7 +47,7 @@ func (repo *UserRepository) DeleteById(user domain.User) (err error) {
 }
 
 func (repo *UserRepository) FindByEmail(email string) (user domain.User, err error) {
-	if err = repo.Find(&user, "email = ?", email).Error; err != nil {
+	if err = repo.First(&user, "email = ?", email).Error; err != nil {
 		return
 	}
 	return
