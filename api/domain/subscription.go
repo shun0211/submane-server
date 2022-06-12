@@ -30,6 +30,7 @@ type MyTime struct {
 func (t *MyTime) Scan(value interface{}) error {
 	tm, ok := value.(time.Time)
 	if !ok {
+		// NOTE: Error型を返す
 		return fmt.Errorf("error")
 	}
 	t.Time = tm

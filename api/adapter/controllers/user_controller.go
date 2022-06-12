@@ -6,14 +6,11 @@ import (
 	"api/usecase"
 	"api/utils"
 	"context"
-	"net/http"
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	firebase "firebase.google.com/go"
-	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"google.golang.org/api/option"
 )
@@ -71,41 +68,19 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 		return
 	}
 
-	payload := jwt.StandardClaims{
-		Subject: strconv.Itoa(int(user.ID)),
-		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-	}
-	jwt, err := jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte("secret"))
+	jwt, err := generateJWT(strconv.Itoa(int(user.ID)))
 	if err != nil {
 		c.JSON(500, err.Error())
 		return
 	}
-
-	// NOTE: Cookieへ書き込み
-	cookie := new(http.Cookie)
-	cookie.Name = "userId"
-	cookie.Value = jwt
-	cookie.Expires = time.Now().Add(24 * time.Hour)
-	cookie.HttpOnly = true
-	cookie.Path = "/"
-	cookie.SameSite = http.SameSiteNoneMode
-	cookie.Secure = true
-	c.SetCookie(cookie)
+	setCookie(c, jwt)
 
 	c.JSON(200, user)
 	return
 }
 
 func (controller *UserController) Logout(c echo.Context) (err error) {
-	cookie := new(http.Cookie)
-	cookie.Name = "userId"
-	cookie.Value = ""
-	cookie.HttpOnly = true
-	cookie.Path = "/"
-	cookie.SameSite = http.SameSiteNoneMode
-	cookie.Secure = true
-	c.SetCookie(cookie)
-
+	setCookie(c, "")
 	c.JSON(200, "logout")
 	return
 }
@@ -123,7 +98,7 @@ func (controller *UserController) Index(c echo.Context) (err error) {
 func (controller *UserController) Show(c echo.Context) (err error) {
 	cookie, err := c.Cookie("userId")
 	if err != nil {
-		c.JSON(401, NewError((err)))
+		c.JSON(401, NewError(err))
 		return
 	}
 
@@ -185,29 +160,13 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 		return
 	}
 
-	payload := jwt.StandardClaims{
-		Subject: strconv.Itoa(int(user.ID)),
-		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-	}
-	jwt, err := jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte("secret"))
+	jwt, err := generateJWT(strconv.Itoa(int(user.ID)))
 	if err != nil {
 		c.JSON(500, err.Error())
 		return
 	}
+	setCookie(c, jwt)
 
-	cookie := new(http.Cookie)
-	cookie.Name = "userId"
-	cookie.Value = jwt
-	cookie.Expires = time.Now().Add(24 * time.Hour)
-	// NOTE: https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Set-Cookie
-	// JavaScript が Document.cookie プロパティなどを介してこのクッキーにアクセスすることを禁止します。
-	cookie.HttpOnly = true
-	cookie.Path = "/"
-	cookie.SameSite = http.SameSiteNoneMode
-	// クッキーは、リクエストが SSL と HTTPS プロトコルを使用して行われた場合にのみサーバーに送信されます。
-	cookie.Secure = true
-
-	c.SetCookie(cookie)
 	c.JSON(201, user)
 	return
 }
