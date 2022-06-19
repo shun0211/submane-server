@@ -6,6 +6,7 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type SqlHandler struct {
@@ -16,7 +17,9 @@ type SqlHandler struct {
 // FUCK: database.SqlHandlerが戻り値で指定されているのに対して、関数内ではSqlHandlerのポインタ型を返していてOKなのかが分からない
 func NewSqlHandler() database.SqlHandler {
 	dsn := "host=postgres user=gorm password=gorm dbname=submane_db port=5432 sslmode=disable TimeZone=Asia/Tokyo"
-	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{}) // &gormはポインタ型
+	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	}) // &gormはポインタ型
 	if err != nil {
 		panic(err.Error())
 	}
@@ -30,7 +33,7 @@ func NewSqlHandler() database.SqlHandler {
 }
 
 func (handler *SqlHandler) Find(out interface{}, where ...interface{}) *gorm.DB {
-	return handler.Conn.Find(out, where...)
+	return handler.Conn.Order("created_at desc").Find(out, where...)
 }
 
 func(handler *SqlHandler) First(out interface{}, where ...interface{}) *gorm.DB {
