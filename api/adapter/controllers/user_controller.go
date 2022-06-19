@@ -41,29 +41,33 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 	}
 
 	// NOTE: JSONデータの場合、下のようにしないとBodyのデータを取得できない FormValueは使えない
-	userParam := new(domain.User)
-	c.Bind(userParam)
+	loginParam := new(domain.LoginParam)
+	c.Bind(loginParam)
 
-	user, err := controller.Interactor.UserByEmail(userParam.Email)
+	user, err := controller.Interactor.UserByEmail(loginParam.Email)
 	if err != nil {
 		// NOTE: Firebaseへ確認のリクエストを送る
 		opt := option.WithCredentialsFile(os.Getenv("FIREBASE_KEYFILE_JSON"))
 		app, _ := firebase.NewApp(context.Background(), nil, opt)
 		ctx := context.Background()
 		client, _ := app.Auth(context.Background())
-		_, err = client.GetUser(ctx, string(userParam.Uid))
+		_, err = client.GetUser(ctx, loginParam.Uid)
 		if err == nil {
 			var (
 				createUser domain.User
 				jwt string
 			)
-			createUser, err = controller.Interactor.Add(*userParam)
+			user := domain.User{}
+			c.Bind(&user)
+			user.SetUid(loginParam.Uid)
+
+			createUser, err = controller.Interactor.Add(user)
 			if err != nil {
 				c.JSON(500, NewError(err.Error(), ""))
 				return
 			}
 
-			jwt, err = generateJWT(strconv.Itoa(int(user.ID)))
+			jwt, err = generateJWT(strconv.Itoa(int(createUser.ID)))
 			if err != nil {
 				c.JSON(500, err.Error())
 				return

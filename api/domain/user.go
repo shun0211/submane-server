@@ -18,6 +18,11 @@ type User struct {
 	Uid []byte            `json:"uid" validate:"required"`
 }
 
+type LoginParam struct {
+	Email string `json:"email"`
+	Uid string   `json:"uid"`
+}
+
 func (user *User) SetUid(uid string) {
 		// func GenerateFromPassword(password []byte, cost int) ([]byte, error)
 	hashedUid, _ := bcrypt.GenerateFromPassword([]byte(uid), 12)
