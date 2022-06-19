@@ -5,9 +5,13 @@ import (
 	"api/domain"
 	"api/usecase"
 	"api/utils"
+	"context"
+	"os"
 	"strconv"
 
+	firebase "firebase.google.com/go"
 	"github.com/labstack/echo/v4"
+	"google.golang.org/api/option"
 )
 
 type UserController struct {
@@ -42,6 +46,34 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 
 	user, err := controller.Interactor.UserByEmail(userParam.Email)
 	if err != nil {
+		// NOTE: Firebaseへ確認のリクエストを送る
+		opt := option.WithCredentialsFile(os.Getenv("FIREBASE_KEYFILE_JSON"))
+		app, _ := firebase.NewApp(context.Background(), nil, opt)
+		ctx := context.Background()
+		client, _ := app.Auth(context.Background())
+		_, err = client.GetUser(ctx, string(userParam.Uid))
+		if err == nil {
+			var (
+				createUser domain.User
+				jwt string
+			)
+			createUser, err = controller.Interactor.Add(*userParam)
+			if err != nil {
+				c.JSON(500, NewError(err.Error(), ""))
+				return
+			}
+
+			jwt, err = generateJWT(strconv.Itoa(int(user.ID)))
+			if err != nil {
+				c.JSON(500, err.Error())
+				return
+			}
+			setCookie(c, jwt)
+
+			c.JSON(200, createUser)
+			return
+		}
+
 		c.JSON(404, NotFoundError("ユーザ"))
 		return
 	}
