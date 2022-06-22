@@ -3,6 +3,7 @@ package controllers
 import (
 	"api/adapter/database"
 	"api/domain"
+	"api/dto"
 	"api/usecase"
 	"api/utils"
 	"strconv"
@@ -33,12 +34,14 @@ func (controller *SubscriptionController) Index(c echo.Context) (err error) {
 	}
 
 	userId, _ := strconv.Atoi(c.QueryParam("userId"))
-	subscriptions, err := controller.Interactor.Subscriptions(userId)
+	totalCount, _ := controller.Interactor.GetTotalCount(userId)
+	page := utils.ConvertToPage(c, totalCount)
+	subscriptions, err := controller.Interactor.Subscriptions(userId, page)
 	if err != nil {
 		c.JSON(500, NewError(err.Error(), ""))
 		return
 	}
-	c.JSON(200, subscriptions)
+	c.JSON(200, dto.SubscriptionDto{Subscriptions: subscriptions, Page: page})
 	return
 }
 
@@ -60,7 +63,7 @@ func (controller *SubscriptionController) Show(c echo.Context) (err error) {
 	return
 }
 
-func(controller *SubscriptionController) Create(c echo.Context) (err error) {
+func (controller *SubscriptionController) Create(c echo.Context) (err error) {
 	_, err = verifyCookie(c)
 	if err != nil {
 		c.JSON(401, err)
@@ -115,7 +118,7 @@ func (controller *SubscriptionController) Save(c echo.Context) (err error) {
 	return
 }
 
-func(controller *SubscriptionController) Delete(c echo.Context) (err error) {
+func (controller *SubscriptionController) Delete(c echo.Context) (err error) {
 	_, err = verifyCookie(c)
 	if err != nil {
 		c.JSON(401, err)

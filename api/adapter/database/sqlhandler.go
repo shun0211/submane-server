@@ -1,6 +1,10 @@
 package database
 
-import "gorm.io/gorm"
+import (
+	"api/dto"
+
+	"gorm.io/gorm"
+)
 
 type SqlHandler interface {
 	Find(interface{}, ...interface{}) *gorm.DB
@@ -11,4 +15,5 @@ type SqlHandler interface {
 	Save(interface{}) *gorm.DB
 	Delete(interface{}) *gorm.DB
 	Where(interface{}, ...interface{}) *gorm.DB
+	Paginate(dto.Page) *gorm.DB
 }

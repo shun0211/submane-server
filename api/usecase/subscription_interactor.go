@@ -1,6 +1,9 @@
 package usecase
 
-import "api/domain"
+import (
+	"api/domain"
+	"api/dto"
+)
 
 type SubscriptionInteractor struct {
 	SubscriptionRepository SubscriptionRepository
@@ -11,8 +14,8 @@ func (interactor *SubscriptionInteractor) SubscriptionById(id int) (subscription
 	return
 }
 
-func (interactor *SubscriptionInteractor) Subscriptions(userId int) (subscriptions domain.Subscriptions, err error) {
-	subscriptions, err = interactor.SubscriptionRepository.FindAll(userId)
+func (interactor *SubscriptionInteractor) Subscriptions(userId int, page dto.Page) (subscriptions domain.Subscriptions, err error) {
+	subscriptions, err = interactor.SubscriptionRepository.FindAll(userId, page)
 	return
 }
 
@@ -28,5 +31,10 @@ func(interactor *SubscriptionInteractor) Update(s domain.Subscription) (subscrip
 
 func(interactor *SubscriptionInteractor) DeleteById(s domain.Subscription) (err error) {
 	err = interactor.SubscriptionRepository.DeleteById(s)
+	return
+}
+
+func(interactor *SubscriptionInteractor) GetTotalCount(userId int) (totalCount int, err error) {
+	totalCount, err = interactor.SubscriptionRepository.GetTotalCount(userId)
 	return
 }
