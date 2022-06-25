@@ -57,7 +57,7 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 				jwt string
 			)
 			user := domain.User{}
-			c.Bind(&user)
+			user.Email = loginParam.Email
 			user.SetUid(loginParam.Uid)
 
 			createUser, err = controller.Interactor.Add(user)
