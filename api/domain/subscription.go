@@ -11,16 +11,16 @@ type Subscriptions []Subscription
 
 type Subscription struct {
 	// NOTE: IDフィールドは自動で主キーとして扱われる
-	ID        int             `gorm:"primary_key" json:"id"`
-	CreatedAt *time.Time      `json:"createdAt"`
-	UpdatedAt *time.Time      `json:"updatedAt"`
-	DeletedAt *time.Time      `json:"deletedAt"`
-	Name string               `json:"name" validate:"required" jaFieldName:"サブスクリプション名"`
-	Price int                 `json:"price" validate:"required" jaFieldName:"月額料金"`
-	ContractAt MyTime         `json:"contractAt" jaFieldName:"契約日"`
-	UserID int                `json:"userId" validate:"required"`
+	ID         int        `gorm:"primary_key" json:"id"`
+	CreatedAt  *time.Time `json:"created_at"`
+	UpdatedAt  *time.Time `json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at"`
+	Name       string     `json:"name" validate:"required" jaFieldName:"サブスクリプション名"`
+	Price      int        `json:"price" validate:"required" jaFieldName:"月額料金"`
+	ContractAt MyTime     `json:"contract_at" jaFieldName:"契約日"`
+	UserID     int        `json:"user_id" validate:"required"`
 	// HACK:" Key: 'Subscription.User.Email' Error:Field validation for 'Email' failed on the 'required'となるので、一旦バリデーション無視
-	User User                 `validate:"-" gorm:"foreignKey:UserID"`
+	User       User       `validate:"-" gorm:"foreignKey:UserID"`
 }
 
 type MyTime struct {
