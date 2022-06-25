@@ -13,14 +13,14 @@ type User struct {
 	CreatedAt *time.Time  `json:"created_at"`
 	UpdatedAt *time.Time  `json:"updated_at"`
 	DeletedAt *time.Time  `json:"deleted_at"`
-	Name string           `json:"name" jaFieldName:"名前"`
-	Email string          `json:"email" validate:"required" jaFieldName:"メールアドレス"`
-	Uid []byte            `json:"uid" validate:"required"`
+	Name      string      `json:"name" jaFieldName:"名前"`
+	Email     string      `json:"email" validate:"required" jaFieldName:"メールアドレス"`
+	Uid       []byte      `json:"uid" validate:"required"`
 }
 
 type LoginParam struct {
 	Email string `json:"email"`
-	Uid string   `json:"uid"`
+	Uid   string `json:"uid"`
 }
 
 func (user *User) SetUid(uid string) {

@@ -3,6 +3,7 @@ package driver
 import (
 	"api/adapter/database"
 	"api/domain"
+	"api/seeds"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -25,8 +26,13 @@ func NewSqlHandler() database.SqlHandler {
 	}
 
 	// NOTE: Auto Migration
-	// conn.Migrator().DropTable("subscriptions")
+	conn.Migrator().DropTable("users")
+	conn.Migrator().DropTable("subscriptions")
 	conn.AutoMigrate(domain.User{}, domain.Subscription{})
+
+	// HACK: CMDにする
+	seeds.CreateUser(conn)
+	seeds.CreateSubscriptions(conn)
 
 	sqlHandler := &SqlHandler{Conn: conn}
 	return sqlHandler

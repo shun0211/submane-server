@@ -81,7 +81,7 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 		return
 	}
 
-	uid := c.FormValue("uid")
+	uid := loginParam.Uid
 	if err = user.CompareUid(uid); err != nil {
 		c.JSON(401, NewError("", "Invalid Uid"))
 		return
