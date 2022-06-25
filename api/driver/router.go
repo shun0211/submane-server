@@ -2,7 +2,6 @@ package driver
 
 import (
 	"api/adapter/controllers"
-	"api/utils"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -25,7 +24,7 @@ func Process(next echo.HandlerFunc) echo.HandlerFunc {
 func Init() {
 	// Echo instance
 	e := echo.New()
-	e.Validator = utils.NewValidator()
+	e.Validator = controllers.NewValidator()
 
 	userController := controllers.NewUserController(NewSqlHandler())
 	subscriptionController := controllers.NewSubscriptionController(NewSqlHandler())

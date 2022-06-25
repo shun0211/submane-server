@@ -3,7 +3,6 @@ package driver
 import (
 	"api/adapter/database"
 	"api/domain"
-	"api/dto"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -67,7 +66,7 @@ func(handler *SqlHandler) Where(query interface{}, args ...interface{}) *gorm.DB
 	return handler.Conn.Where(query, args...)
 }
 
-func(handler *SqlHandler) Paginate(page dto.Page) *gorm.DB {
+func(handler *SqlHandler) Paginate(page domain.Page) *gorm.DB {
 	offset := (page.Page - 1) * page.PerPage
 	return handler.Conn.Offset(offset).Limit(page.PerPage)
 }

@@ -4,7 +4,6 @@ import (
 	"api/adapter/database"
 	"api/domain"
 	"api/usecase"
-	"api/utils"
 	"context"
 	"os"
 	"strconv"
@@ -154,7 +153,7 @@ func (controller *UserController) Create(c echo.Context) (err error) {
 	u.SetUid(c.FormValue("uid"))
 
 	if err = c.Validate(&u); err != nil {
-		messages := utils.GetErrorMessages(err)
+		messages := GetErrorMessages(err)
 		c.JSON(400, messages)
 		return
 	}

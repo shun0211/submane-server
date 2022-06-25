@@ -2,7 +2,6 @@ package database
 
 import (
 	"api/domain"
-	"api/dto"
 
 )
 
@@ -18,7 +17,7 @@ func (repo *SubscriptionRepository) FindById(id int) (subscription domain.Subscr
 	return
 }
 
-func (repo *SubscriptionRepository) FindAll(userId int, page dto.Page) (subscriptions domain.Subscriptions, err error) {
+func (repo *SubscriptionRepository) FindAll(userId int, page domain.Page) (subscriptions domain.Subscriptions, err error) {
 	if err = repo.Paginate(page).Find(&subscriptions, "user_id = ?", userId).Error; err != nil {
 		return
 	}

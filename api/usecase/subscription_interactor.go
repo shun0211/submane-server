@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"api/domain"
-	"api/dto"
 )
 
 type SubscriptionInteractor struct {
@@ -14,7 +13,7 @@ func (interactor *SubscriptionInteractor) SubscriptionById(id int) (subscription
 	return
 }
 
-func (interactor *SubscriptionInteractor) Subscriptions(userId int, page dto.Page) (subscriptions domain.Subscriptions, err error) {
+func (interactor *SubscriptionInteractor) Subscriptions(userId int, page domain.Page) (subscriptions domain.Subscriptions, err error) {
 	subscriptions, err = interactor.SubscriptionRepository.FindAll(userId, page)
 	return
 }

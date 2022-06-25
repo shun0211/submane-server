@@ -3,9 +3,7 @@ package controllers
 import (
 	"api/adapter/database"
 	"api/domain"
-	"api/dto"
 	"api/usecase"
-	"api/utils"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -13,6 +11,11 @@ import (
 
 type SubscriptionController struct {
 	Interactor usecase.SubscriptionInteractor
+}
+
+type SubscriptionDto struct {
+	Page          domain.Page          `json:"page"`
+	Subscriptions domain.Subscriptions `json:"subscriptions"`
 }
 
 func NewSubscriptionController(sqlHandler database.SqlHandler) *SubscriptionController {
@@ -35,13 +38,13 @@ func (controller *SubscriptionController) Index(c echo.Context) (err error) {
 
 	userId, _ := strconv.Atoi(c.QueryParam("userId"))
 	totalCount, _ := controller.Interactor.GetTotalCount(userId)
-	page := utils.ConvertToPage(c, totalCount)
+	page := CreateToPage(c, totalCount)
 	subscriptions, err := controller.Interactor.Subscriptions(userId, page)
 	if err != nil {
 		c.JSON(500, NewError(err.Error(), ""))
 		return
 	}
-	c.JSON(200, dto.SubscriptionDto{Subscriptions: subscriptions, Page: page})
+	c.JSON(200, SubscriptionDto{Subscriptions: subscriptions, Page: page})
 	return
 }
 
@@ -74,7 +77,7 @@ func (controller *SubscriptionController) Create(c echo.Context) (err error) {
 	c.Bind(&s)
 
 	if err = c.Validate(s); err != nil {
-		messages := utils.GetErrorMessages(err)
+		messages := GetErrorMessages(err)
 		c.JSON(400, messages)
 		return
 	}
@@ -103,7 +106,7 @@ func (controller *SubscriptionController) Save(c echo.Context) (err error) {
 
 	c.Bind(&subscription)
 	if err = c.Validate(subscription); err != nil {
-		messages := utils.GetErrorMessages(err)
+		messages := GetErrorMessages(err)
 		c.JSON(400, messages)
 		return
 	}
