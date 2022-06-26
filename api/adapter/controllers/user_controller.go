@@ -5,12 +5,10 @@ import (
 	"api/domain"
 	"api/usecase"
 	"context"
-	"os"
 	"strconv"
 
 	firebase "firebase.google.com/go"
 	"github.com/labstack/echo/v4"
-	"google.golang.org/api/option"
 )
 
 type UserController struct {
@@ -46,8 +44,7 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 	user, err := controller.Interactor.UserByEmail(loginParam.Email)
 	if err != nil {
 		// NOTE: Firebaseへ確認のリクエストを送る
-		opt := option.WithCredentialsFile(os.Getenv("FIREBASE_KEYFILE_JSON"))
-		app, _ := firebase.NewApp(context.Background(), nil, opt)
+		app, _ := firebase.NewApp(context.Background(), nil)
 		ctx := context.Background()
 		client, _ := app.Auth(context.Background())
 		_, err = client.GetUser(ctx, loginParam.Uid)
