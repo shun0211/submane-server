@@ -11,3 +11,9 @@ ENV GO_ENV=development
 RUN go build -o /go/bin/app
 RUN go install github.com/go-delve/delve/cmd/dlv@latest
 RUN curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
+
+# HACK: golang-migrateをコンテナの中に入れる
+# RUN curl -L https://packagecloud.io/golang-migrate/migrate/gpgkey | apt-key add -
+# RUN echo "deb https://packagecloud.io/golang-migrate/migrate/ubuntu/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/migrate.list
+# RUN apt-get update
+# RUN apt-get install -y migrate

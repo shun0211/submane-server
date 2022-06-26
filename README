@@ -1,0 +1,4 @@
+# Create Migration File
+```bash
+migrate create -ext sql -dir api/db/migrations -seq create_users
+```
