@@ -3,6 +3,7 @@ package driver
 import (
 	"api/adapter/controllers"
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -35,7 +36,7 @@ func Init() {
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		// NOTE: クッキーのような資格情報を含んでいてAccess-Control-Allow-Origin: *のようにワイルドカードが指定された場合、ブラウザは資格情報を破棄する
 		// NOTE: 実際のオリジンを指定する必要がある
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{os.Getenv("FRONT_URI")},
 		// NOTE: プリフライトのレスポンスで用いられ、リソースへのアクセス時に許可するメソッドを指定する
 		AllowMethods:     []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
 		// NOTE: プリフライトでの場合、実際のリクエストを資格情報付きで行うことができることを示す

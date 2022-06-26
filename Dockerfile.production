@@ -5,6 +5,7 @@ COPY ./api/go.mod .
 COPY ./api/go.sum .
 RUN go mod download
 COPY ./api .
+ENV GO_ENV=production
 
 RUN go build -o server .
 ENTRYPOINT ["/server web"]
