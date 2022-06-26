@@ -4,7 +4,7 @@ services:
     container_name: echo
     build:
       context: .
-      dockerfile: ./docker/api/Dockerfile
+      dockerfile: ./Dockerfile.development
       target: build
     volumes:
       - ./api:/go/src/submane-server/api
