@@ -6,5 +6,5 @@ COPY ./api/go.sum .
 RUN go mod download
 COPY ./api .
 
-RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-w -s" -o /server ./api
-ENTRYPOINT ["/main web"]
+RUN go build -o server .
+ENTRYPOINT ["/server web"]
