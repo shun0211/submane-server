@@ -2,6 +2,7 @@ package seeds
 
 import (
 	"api/domain"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -11,6 +12,7 @@ func CreateSubscriptions(db *gorm.DB) (err error) {
 		subscription := domain.Subscription{
 			Name: "テスト",
 			Price: 1000,
+			ContractedAt: domain.MyTime{Time: time.Now()},
 			UserID: 1,
 		}
 		if err = db.Create(&subscription).Error; err != nil {
