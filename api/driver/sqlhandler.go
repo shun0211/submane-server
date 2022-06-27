@@ -4,6 +4,8 @@ import (
 	"api/adapter/database"
 	"api/domain"
 	"api/seeds"
+	"fmt"
+	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -17,7 +19,14 @@ type SqlHandler struct {
 // SqlHandlerの実装部分
 // FUCK: database.SqlHandlerが戻り値で指定されているのに対して、関数内ではSqlHandlerのポインタ型を返していてOKなのかが分からない
 func NewSqlHandler() database.SqlHandler {
-	dsn := "host=postgres user=gorm password=gorm dbname=submane_db port=5432 sslmode=disable TimeZone=Asia/Tokyo"
+	dsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Tokyo",
+		os.Getenv("POSTGRES_HOSTNAME"),
+		os.Getenv("POSTGRES_USERNAME"),
+		os.Getenv("POSTGRES_PASSWORD"),
+		os.Getenv("POSTGRES_DATABASE"),
+		os.Getenv("POSTGRES_PORT"),
+	)
 	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	}) // &gormはポインタ型
