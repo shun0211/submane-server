@@ -1,4 +1,4 @@
-FROM golang:latest AS build
+FROM golang:latest as build
 
 WORKDIR /go/src/submane-server/api
 COPY ./api/go.mod .
