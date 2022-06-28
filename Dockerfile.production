@@ -1,11 +1,13 @@
-FROM golang:latest as build
+# FROM golang:latest as build
 
-WORKDIR /go/src/submane-server/api
-COPY ./api/go.mod .
-COPY ./api/go.sum .
-RUN go mod download
-COPY ./api .
-ENV GO_ENV=production
+# WORKDIR /go/src/submane-server/api
+# COPY ./api/go.mod .
+# COPY ./api/go.sum .
+# RUN go mod download
+# COPY ./api .
+# ENV GO_ENV=production
 
-RUN go build -o server .
-ENTRYPOINT ["/server web"]
+# RUN go build -o server .
+# RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.linux-amd64.tar.gz | tar xvz
+# RUN mv ./migrate /usr/bin/migrate
+# ENTRYPOINT ["/server web"]
