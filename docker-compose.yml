@@ -20,6 +20,8 @@ services:
       - apparmor:unconfined
     cap_add:
       - SYS_PTRACE
+    environment:
+      PORT: 1323
   postgres:
     image: postgres
     platform: linux/amd64

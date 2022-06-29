@@ -2,6 +2,7 @@ package driver
 
 import (
 	"api/adapter/controllers"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -65,5 +66,6 @@ func Init() {
 	e.DELETE("/subscriptions/:id", func(c echo.Context) error { return subscriptionController.Delete(c) })
 
 	// Start server
-	e.Logger.Fatal(e.Start(":1323"))
+	port := os.Getenv("PORT")
+	e.Logger.Fatal(e.Start(fmt.Sprintf(":%s", port)))
 }
