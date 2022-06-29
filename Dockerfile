@@ -22,8 +22,8 @@ RUN go build server.go
 FROM alpine:latest AS production
 # NOTE: これまでの構築ステージをコピー元として指定するために--form=<名前>フラグを使っている
 #       COPY <COPY元> <COPY先>
-COPY --from=build /submane-server/server ./
-COPY --from=build /submane-server/migrate /bin/migrate
+COPY --from=builder /submane-server/server ./
+COPY --from=builder /submane-server/migrate /bin/migrate
 
 ENV GO_ENV=production
 # ENV FRONT_URI=http://localhost:3000
