@@ -1,5 +1,3 @@
 build:
   docker:
-    echo: Dockerfile
-# run:
-#   web: /server
+    web: Dockerfile

@@ -5,9 +5,9 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-      target: build
+      target: builder
     volumes:
-      - ./api:/go/src/submane-server/api
+      - ./api:/submane-server/api
     ports:
       - "1323:1323"
       - "2345:2345"
