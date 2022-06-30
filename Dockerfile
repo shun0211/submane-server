@@ -20,6 +20,8 @@ RUN go build server.go
 
 # NOTE: golangのイメージは大きすぎるが、実行時には不要なので軽量なalpineを使って実行する golangと比べて150分の1になる
 FROM alpine:latest AS production
+RUN apk update \
+  && apk add --no-cache curl
 # NOTE: これまでの構築ステージをコピー元として指定するために--form=<名前>フラグを使っている
 #       COPY <COPY元> <COPY先>
 COPY --from=builder /submane-server/server ./
@@ -27,10 +29,12 @@ COPY --from=builder /submane-server/migrate /bin/migrate
 
 ENV GO_ENV=production
 # ENV FRONT_URI=http://localhost:3000
-# ENV POSTGRES_DATABASE=submane_db
-# ENV POSTGRES_HOSTNAME=postgres
-# ENV POSTGRES_USERNAME=gorm
-# ENV POSTGRES_PASSWORD=gorm
+# ENV POSTGRES_DATABASE=submane_db_connection_test
+# ENV POSTGRES_HOSTNAME=localhost
+# ENV POSTGRES_USERNAME=sakaishun
+# ENV POSTGRES_PASSWORD=password
 # ENV POSTGRES_PORT=5432
+# ENV PORT=1324
 
-CMD [ "./server" ]
+# CMD [ "./server", "$PORT" ]
+CMD ./server $PORT

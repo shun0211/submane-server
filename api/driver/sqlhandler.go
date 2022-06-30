@@ -34,6 +34,7 @@ func NewSqlHandler() database.SqlHandler {
 		panic(err.Error())
 	}
 
+	print("Migration Start!")
 	// NOTE: Auto Migration
 	conn.Migrator().DropTable("users")
 	conn.Migrator().DropTable("subscriptions")
