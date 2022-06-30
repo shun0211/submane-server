@@ -37,4 +37,4 @@ ENV GO_ENV=production
 # ENV PORT=1324
 
 # CMD [ "./server", "$PORT" ]
-CMD ./server $PORT
+CMD echo "test"
