@@ -1,3 +1,4 @@
 /api/tmp/
 /api/.env
 /api/credentials/
+/docker-inspect.json

@@ -20,7 +20,7 @@ type SqlHandler struct {
 // FUCK: database.SqlHandlerが戻り値で指定されているのに対して、関数内ではSqlHandlerのポインタ型を返していてOKなのかが分からない
 func NewSqlHandler() database.SqlHandler {
 	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Tokyo",
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=require TimeZone=Asia/Tokyo",
 		os.Getenv("POSTGRES_HOSTNAME"),
 		os.Getenv("POSTGRES_USERNAME"),
 		os.Getenv("POSTGRES_PASSWORD"),
@@ -34,15 +34,17 @@ func NewSqlHandler() database.SqlHandler {
 		panic(err.Error())
 	}
 
-	print("Migration Start!")
-	// NOTE: Auto Migration
-	conn.Migrator().DropTable("users")
-	conn.Migrator().DropTable("subscriptions")
-	conn.AutoMigrate(domain.User{}, domain.Subscription{})
+	if os.Getenv("GO_ENV") == "development" {
+		print("Migration Start!")
+		// NOTE: Auto Migration
+		conn.Migrator().DropTable("users")
+		conn.Migrator().DropTable("subscriptions")
+		conn.AutoMigrate(domain.User{}, domain.Subscription{})
 
-	// HACK: CMDにする
-	seeds.CreateUser(conn)
-	seeds.CreateSubscriptions(conn)
+		// HACK: CMDにする
+		seeds.CreateUser(conn)
+		seeds.CreateSubscriptions(conn)
+	}
 
 	sqlHandler := &SqlHandler{Conn: conn}
 	return sqlHandler

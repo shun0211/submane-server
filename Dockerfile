@@ -28,12 +28,4 @@ COPY --from=builder /submane-server/server ./
 COPY --from=builder /submane-server/migrate /bin/migrate
 
 ENV GO_ENV=production
-# ENV FRONT_URI=http://localhost:3000
-# ENV POSTGRES_DATABASE=submane_db_connection_test
-# ENV POSTGRES_HOSTNAME=localhost
-# ENV POSTGRES_USERNAME=sakaishun
-# ENV POSTGRES_PASSWORD=password
-# ENV POSTGRES_PORT=5432
-# ENV PORT=1324
-
 CMD [ "./server", "$PORT" ]

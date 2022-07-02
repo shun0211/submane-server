@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-	print("test")
 	if os.Getenv("GO_ENV") == "development" {
 		os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "credentials/submane-firebase-adminsdk.json")
 		err := godotenv.Load()
@@ -17,6 +16,5 @@ func main() {
 			log.Fatal("Error loading .env file")
 		}
 	}
-	print("test")
 	driver.Init()
 }
