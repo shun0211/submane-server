@@ -28,7 +28,6 @@ COPY --from=builder /submane-server/server ./
 COPY --from=builder /submane-server/migrate /bin/migrate
 
 ENV GO_ENV=production
-CMD echo "test"
 # ENV FRONT_URI=http://localhost:3000
 # ENV POSTGRES_DATABASE=submane_db_connection_test
 # ENV POSTGRES_HOSTNAME=localhost
@@ -37,4 +36,4 @@ CMD echo "test"
 # ENV POSTGRES_PORT=5432
 # ENV PORT=1324
 
-# CMD [ "./server", "$PORT" ]
+CMD [ "./server", "$PORT" ]
