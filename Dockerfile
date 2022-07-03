@@ -25,7 +25,7 @@ RUN apk update \
 # NOTE: これまでの構築ステージをコピー元として指定するために--form=<名前>フラグを使っている
 #       COPY <COPY元> <COPY先>
 COPY --from=builder /submane-server/server ./
+COPY --from=builder /submane-server/driver/db/migrations ./migrations/
 COPY --from=builder /submane-server/migrate /bin/migrate
 
 ENV GO_ENV=production
-CMD [ "./server", "$PORT" ]

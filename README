@@ -1,4 +1,13 @@
-# Create Migration File
+# マイグレーション
+## Create Migration File
+
 ```bash
-migrate create -ext sql -dir api/db/migrations -seq create_users
+migrate create -ext sql -dir api/driver/db/migrations -seq create_users
+```
+
+## 手動でmigration実行
+
+コンテナの中に入って以下を実行
+```bash
+./migrate -source file://api/driver/db/migrations -database postgres://gorm:gorm@postgres:5432/submane_db?sslmode=disable up 2
 ```
