@@ -1,13 +1,13 @@
 build:
   docker:
     web: Dockerfile
-    release:
-      dockerfile: Dockerfile
-      target: builder
+    # release:
+    #   dockerfile: Dockerfile
+    #   target: builder
 run:
   web: ./server $PORT
 # NOTE: releaseフェーズがうまく動いていない
-release:
-  image: release
-  command:
-    - ./migrate -source file://migrations -database $DATABASE_URL up
+# release:
+#   image: release
+#   command:
+#     - ./migrate -source file://migrations -database $DATABASE_URL up

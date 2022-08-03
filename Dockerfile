@@ -29,3 +29,4 @@ COPY --from=builder /submane-server/driver/db/migrations ./migrations/
 COPY --from=builder /submane-server/migrate /bin/migrate
 
 ENV GO_ENV=production
+CMD [ "./server", "$PORT" ]
