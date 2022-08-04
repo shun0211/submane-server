@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -10,6 +11,7 @@ import (
 	firebase "firebase.google.com/go"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
+	"google.golang.org/api/option"
 )
 
 func verifyCookie(c echo.Context) (userId int, err error) {
@@ -58,7 +60,8 @@ func generateJWT(value string) (jwtString string, err error) {
 }
 
 func verifyIDToken(c echo.Context) (status int, err error) {
-  app, err := firebase.NewApp(context.Background(), nil)
+	opt := option.WithCredentialsJSON([]byte(os.Getenv("GOOGLE_CREDENTIALS_JSON")))
+  app, err := firebase.NewApp(context.Background(), nil, opt)
   if err != nil {
 		status = 500
     return

@@ -5,10 +5,12 @@ import (
 	"api/domain"
 	"api/usecase"
 	"context"
+	"os"
 	"strconv"
 
 	firebase "firebase.google.com/go"
 	"github.com/labstack/echo/v4"
+	"google.golang.org/api/option"
 )
 
 type UserController struct {
@@ -29,7 +31,7 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 func (controller *UserController) Login(c echo.Context) (err error) {
 	status, err := verifyIDToken(c)
 	if err != nil && status == 500 {
-		c.JSON(500, NewError(err.Error(), ""))
+		c.JSON(500, NewError(err.Error(), "verifyIDToken Error"))
 		return
 	}
 	if err != nil && status == 400 {
@@ -44,7 +46,8 @@ func (controller *UserController) Login(c echo.Context) (err error) {
 	user, err := controller.Interactor.UserByEmail(loginParam.Email)
 	if err != nil {
 		// NOTE: Firebaseへ確認のリクエストを送る
-		app, _ := firebase.NewApp(context.Background(), nil)
+		opt := option.WithCredentialsJSON([]byte(os.Getenv("GOOGLE_CREDENTIALS_JSON")))
+		app, _ := firebase.NewApp(context.Background(), nil, opt)
 		ctx := context.Background()
 		client, _ := app.Auth(context.Background())
 		_, err = client.GetUser(ctx, loginParam.Uid)
